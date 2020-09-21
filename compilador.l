@@ -1,19 +1,34 @@
+
+
 /* Sección DEFINICIONES */
 %{
 #include <stdio.h>
 #include <string.h>
-#include "compilador.tab.h"
+
+int numLineas = 1;
+int numCaracteres = 1;
 %}
 
-identificador [a-zA-Z\_][a-zA-Z0-9\_]*
+flotanteEmpiezaCero 0{digito}+\.{digito}{1,7}f|[-]0{digito}+\.{digito}{1,7}f 
+dobleEmpiezaCero 0{digito}+\.{digito}{1,15}d|[-]0{digito}+\.{digito}{1,15}d|0{digito}+\.{digito}{1,15}|[-]0{digito}+\.{digito}{1,15}
+/*doble {entero}{parte_exponente}|{digito}*\.{digito}*{parte_exponente}|\.{digito}*{parte_exponente}*/
 
-digito_no_zero [1-9]
-digito 0|{digito_no_zero}
-entero 0|{digito_no_zero}{digito}*
+/*numeros que comienzan en 0, excepto el 0*/
+enteroEmpiezaCero 0{digito}+
 
-indicador_exponente e|E	
-parte_exponente {indicador_exponente}(\+|\-){digito}+
-doble {digito}*{parte_exponente}|{digito}*\.{digito}*{parte_exponente}|\.{digito}*{parte_exponente}
+/*numero con varios puntos o fallas en la coma*/
+errorNumeroFlotanteConComa [-]*{digito}+\,{digito}{1,7}
+errorNumeroDobleConComa [-]*{digito}+\,{digito}{1,15}
+
+/*mas de una coma o punto*/
+errorMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]
+/*errorDobleMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]*/
+
+/*identificar identificador no valido *|[@|&|#]*[{identificador}|"@"|"&"|"#"]+   |[\@|\&|\#]*[{identificador}|\@|\&|\#]+*/
+errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
+
+/*errorEscritura*/
+errorPalabraReservada ^["mientras"|"para"|"si"|"sino"|"caso"|"main"][ ]*[\(|\{|\:]
 
 booleano "verdadero"|"falso"	
 
@@ -23,80 +38,144 @@ cadena \".*\"
 
 nulo "nulo"
 
-palabra_clave  "abstracto"|"afirmar"|"booleano"|"interrupcion"|"byte"|"caso"|"captura"|"caracter"|"clase"|"constante"|"continuar"|"defecto"|"hacer"|"doble"|"sino"|"enumeracion"|"exportar"|"extender"|"final"|"finalmente"|"flotante"|"para"|"ir"|"si"|"implementar"|"importar"|"envezde"|"entero"|"interface"|"largo"|"modulo"|"nativo"|"nuevo"|"paquete"|"privado"|"protegido"|"publico"|"requerir"|"retornar"|"corto"|"estatico"|"strictfp"|"super"|"interruptor"|"sincronizado"|"esto"|"lanzar"|"lanzarvarios"|"transitorio"|"intentar"|"variable"|"vacio"|"volatil"|"mientras"		
+palabra_clave  "abstracto"|"afirmar"|"interrupcion"|"caso"|"captura"|"clase"|"constante"|"continuar"|"defecto"|"hacer"|"sino"|"enumeracion"|"exportar"|"extender"|"final"|"finalmente"|"para"|"ir"|"si"|"implementar"|"importar"|"envezde"|"interface"|"largo"|"modulo"|"nativo"|"nuevo"|"paquete"|"privado"|"protegido"|"publico"|"requerir"|"retornar"|"estatico"|"strictfp"|"super"|"interruptor"|"sincronizado"|"esto"|"lanzar"|"lanzarvarios"|"transitorio"|"intentar"|"variable"|"vacio"|"volatil"|"mientras"		
 
 funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"tanghiperb"|"cbrt"|"ceil"|"raizcuadrada"|"cosenohiperb"|"senohiperb"|"exp"|"random"|"floor"|"maximo"|"minimo"|"redondear"|"seno"|"coseno"|"append"|"cerrar"|"flush"|"imprimir"|"imprimirformato"|"imprimirlinea"|"escribir"|"E"|"PI"|"error"|"entrada"|"salida"
 
+tipo_dato "doble"|"flotante"|"entero"|"booleano"|"Cadena"|"corto"|"largo"|"byte"|"caracter"
 
-/* Sección REGLAS */ 
+identificador [a-zA-Z\_][a-zA-Z0-9\_]*
+
+digito_no_zero [1-9]
+digito 0|{digito_no_zero}
+entero 0|{digito_no_zero}{digito}*
+
+indicador_exponente e|E	
+parte_exponente {indicador_exponente}(\+|\-){digito}*
+
+/*termina en f es float*/
+numeroFlotante [-]*{digito}+\.{digito}{1,7}
+/*termina en d o termina en numero es doble*/
+numeroDoble [-]*{digito}+\.{digito}{1,15}
+
+saltoLinea \n
+
+/*estructuraClaseMetodo [{tipo_dato}|"vacio"|"clase"][ ]*{identificador}[ ]*\(*/
+
+/*
+WHILE "mientras"
+errorNombreVariableSeparado [^{WHILE}]
+*/
+
+/* Sección REGLAS 
+
+{entero}	 { printf("entero : %s\n",yytext); }
+{numeroFlotante}	 { printf("numero flotante : %s\n",yytext); }
+{numeroDoble}	 { printf("numero doble : %s\n",yytext); }
+{caracter}	 { printf("caracter : %s\n",yytext); }
+{cadena}  	 { printf("cadena : %s\n",yytext); }
+{booleano} 	 { printf("booleano : %s\n",yytext); }
+{nulo}		 { printf("nulo : %s\n",yytext); }
+
+{tipo_dato}  { printf("tipo de dato : %s\n",yytext); }
+{palabra_clave}  { printf("palabra clave : %s\n",yytext); }
+
+"+" { printf("SUMA : %s\n",yytext); }
+"-" { printf("Resta : %s\n",yytext); }
+"*" { printf("SignoMultiplicacion : %s\n",yytext); }
+"/" { printf("SignoDivision : %s\n",yytext); }
+"%" { printf("SignoModulo : %s\n",yytext); }
+
+"++" { printf("Incremento : %s\n",yytext); }
+"--" { printf("Decremento : %s\n",yytext); }
+
+"==" { printf("IGUALDAD : %s\n",yytext); }
+"!=" { printf("Diferencia : %s\n",yytext); }
+">"  { printf("Mayor : %s\n",yytext); }
+"<"  { printf("Menor : %s\n",yytext); }
+">=" { printf("Mayor_igual : %s\n",yytext); }
+"<=" { printf("Menor_igual : %s\n",yytext); }
+
+"&&" { printf("Y_Logico : %s\n",yytext); }
+"||" { printf("O_Logico : %s\n",yytext); }
+"!"  { printf("Negacion_logica : %s\n",yytext); }
+
+"&"   { printf("BIN_AND: %s\n",yytext); } 
+"|"   { printf("BIN_OR : %s\n",yytext); } 
+"^"   { printf("BIN_XOR : %s\n",yytext); } 
+"~"   { printf("BIN_COMPLEMENTO : %s\n",yytext); } 
+"<<"  { printf("BIN_DESPLAZAMIENTO_IZQ : %s\n",yytext); } 
+">>"  { printf("BIN_DESPLAZAMIENTO_DER : %s\n",yytext); } 
+">>>" { printf("DESPLAZAMIENTO_DER_LLENADO_CERO: %s\n",yytext); } 
+
+"=" { printf("ASIGNACION : %s\n",yytext); } 
+"+=" { printf("ASIG_INCREMENTA : %s\n",yytext); } 
+"-=" { printf("ASIG_DECREMENTA: %s\n",yytext); } 
+"*=" { printf("ASIG_MULPTIPLICA: %s\n",yytext); } 
+"/=" { printf("ASIG_DIVIDE : %s\n",yytext); } 
+"%=" { printf("ASIG_MODULO : %s\n",yytext); } 
+"<<=" { printf(" ASIG_BIN_DESPLAZAMIENTO_IZQ : %s\n",yytext); } 
+">>=" { printf("ASIG_BIN_DESPLAZAMIENTO_DER : %s\n",yytext); }
+">>>=" { printf("ASIG_BIN_DESPLAZAMIENTO_DER : %s\n",yytext); } 
+"&=" { printf("ASIG_BIN_DESPLAZAMIENTO_DER : %s\n",yytext); } 
+"^=" { printf("ASIG_BIN_XOR : %s\n",yytext); } 
+"|=" { printf("ASIG_BIN_OR : %s\n",yytext); } 
+
+"?:" { printf("OP_CONDICIONAL : %s\n",yytext); }
+
+"instanceof" { printf("EN_VEZ_DE : %s\n",yytext); } 
+
+";" { printf("PUNTO_COMA : %s\n",yytext); } 
+"." { printf("PUNTO : %s\n",yytext); }
+"," { printf("COMA : %s\n",yytext); }
+"(" { printf("PARENT_INI : %s\n",yytext); }
+")" { printf("PARENT_FIN : %s\n",yytext); }
+"{" { printf("LLAVE_INI : %s\n",yytext); }
+"}" { printf("LLAVE_FIN : %s\n",yytext); }
+"[" { printf("CORCH_INI : %s\n",yytext); }
+"]" { printf("CORCH_FIN : %s\n",yytext); }
+
+{funcion_primitiva}	 { printf("FUNCION_PRIMITIVA : %s\n",yytext); }
+
+{identificador}	 { printf("IDENTIFICADOR : %s\n",yytext); }
+
+{errorNombreVariableSeparado} { printf("------------------------ Error, variable escrita con espacios en blanco : %s\n",yytext); }
+
+{estructuraClaseMetodo} { printf("------------------------ estructura metodo o clase : %s\n",yytext); }
+
+
+
+
+{errorDobleMasDeUnPuntoOComa} { printf("Error en la linea %i, columna %i, doble mas de una coma o punto : %s\n", numLineas,numCaracteres,yytext); }
+*/ 
+
 %%
-{entero}	 {return ENTERO;}
-{doble} 	 {return DOBLE;}
-{caracter}	 {return CARACTER;}
-{cadena}  	 {return CADENA;}
-{booleano} 	 {return BOOLEANO;}
-{nulo}		 {return NULO;}
 
-{palabra_clave}  {return PALABRA_CLAVE;}
+{enteroEmpiezaCero}	 { printf("Error en la linea %i, columna %i, numero  entero empieza con 0 y no es 0: %s\n", numLineas, numCaracteres, yytext); }
 
-"+" {return ADICION;}	
-"-" {return SUSTRACCION;}	
-"*" {return MULTIPLICACION;}	
-"/" {return DIVISION;}	
-"%" {return MODULO;}	
+{errorNumeroFlotanteConComa}	 { printf("Error en la linea %i, columna %i, flotante con coma : %s\n", numLineas,numCaracteres,yytext); }
 
-"++" {return INCREMENTA;}
-"--" {return DECREMENTA;}
+{errorNumeroDobleConComa}	 { printf("Error en la linea %i, columna %i, doble con coma : %s\n", numLineas,numCaracteres,yytext); }
 
-"==" {return IGUAL;}
-"!=" {return DIFERENTE;}
-">"  {return MAYOR;}
-"<"  {return MENOR;}
-">=" {return MAYOR_IGUAL;}
-"<=" {return MENOR_IGUAL;}
+{errorMasDeUnPuntoOComa} { printf("Error en la linea %i, columna %i, numero com mas de una coma o punto : %s\n", numLineas, numCaracteres,yytext); }
 
-"&&" {return LOG_AND;}
-"||" {return LOG_OR;}
-"!"  {return LOG_NOT;}
+{flotanteEmpiezaCero}	 { printf("Error en la linea %i, columna %i, numero flotante empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
 
-"&"   {return BIN_AND;} 
-"|"   {return BIN_OR;}
-"^"   {return BIN_XOR;}
-"~"   {return BIN_COMPLEMENTO;}
-"<<"  {return BIN_DESPLAZAMIENTO_IZQ;}
-">>"  {return BIN_DESPLAZAMIENTO_DER;}
-">>>" {return DESPLAZAMIENTO_DER_LLENADO_CERO;}
+{dobleEmpiezaCero}	 { printf("Error en la linea %i, columna %i, numero doble empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
 
-"=" {return ASIGNACION;}
-"+=" {return ASIG_INCREMENTA;}
-"-=" {return ASIG_DECREMENTA;}
-"*=" {return ASIG_MULPTIPLICA;}
-"/=" {return ASIG_DIVIDE;}
-"%=" {return ASIG_MODULO;}
-"<<=" {return ASIG_BIN_DESPLAZAMIENTO_IZQ;}
-">>=" {return ASIG_BIN_DESPLAZAMIENTO_DER;}
-">>>=" {return ASIG_DESPLAZAMIENTO_DER_LLENADO_CERO;}
-"&=" {return ASIG_BIN_AND;}
-"^=" {return ASIG_BIN_XOR;}
-"|=" {return ASIG_BIN_OR;}
+{errorPalabraReservada}	 { printf("Error en la linea %i, columna %i, palabra reservada mal escrita : %s\n", numLineas,numCaracteres,yytext); }
 
-"?" {return INTERROGACION;}
-":" {return DOS_PUNTOS;}
-"instanceof" {return EN_VEZ_DE;}
+{errorIdentificador}	 { printf("Error en la linea %i, columna %i, la escritura numero o variable no es valido : %s\n", numLineas,numCaracteres,yytext); }
 
-";" {return PUNTO_COMA;}
-"," {return COMA;}
-"." {return PUNTO;}
-"(" {return PARENTESIS_INI;}
-")" {return PARENTESIS_FIN;}
-"{" {return LLAVE_INI;}
-"}" {return LLAVE_FIN;}
-"[" {return CORCHETE_INI;}
-"]" {return CORCHETE_FIN;}
-
-
-{funcion_primitiva}	 {return FUNC_PRIMITIVA;}
-
-{identificador}	 {return IDENTIFICADOR;}
+{saltoLinea}				{numLineas++; numCaracteres = 1;}		/* No mostrar entrada */
+\t 					{numCaracteres = numCaracteres + 8;}
+. 					{numCaracteres++;}	/* No mostrar entrada */
 %%
+
+int yywrap() {}
+int main(int argc, char **argv)
+{
+ 	yylex();
+	return 0;
+}
 
