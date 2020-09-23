@@ -1,0 +1,13 @@
+publico clase Mientras {
+ 
+    publico estatico vacio principal(Cadena[] args) {
+ 
+        entero num=1;
+ 
+        mientras (num<=100){
+            System.out.println(num);
+            //Incrementamos num
+            num++;
+        }
+    }
+}
