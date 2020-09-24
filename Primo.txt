@@ -20,13 +20,18 @@ publico estatico vacio main ( String [ ]  args )  {
 	float sinCategorizar = 1.2659;
 	float empieza@fallaSinCategorizar = 05.456789;
 
+	flotante numero125 = -23.23;
+	flotante numero126 = -023.58;	
+	flotante numero127 = -1156.23,45;
+	flotante numero128 = -1156.23.45;
+
 	doble 2coma = 1,12356789;
 	float floatComa = 1,2659;
 	float dobleComaSinAsignar = 1,2659;
 
 	flotante normal = 1.256;
 	flotante puntos = 1.2.56;
-	flotante puntos2abc = 1..56;
+	flotante puntos2 = 1..56;
 	flotante numerooma = 5,45;
 
 	flotante doblePuntoFlotante = 1.25.6;

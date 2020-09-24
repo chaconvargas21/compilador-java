@@ -9,8 +9,8 @@ int numLineas = 1;
 int numCaracteres = 1;
 %}
 
-flotanteEmpiezaCero 0{digito}+\.{digito}{1,7}f|[-]0{digito}+\.{digito}{1,7}f 
-dobleEmpiezaCero 0{digito}+\.{digito}{1,15}d|[-]0{digito}+\.{digito}{1,15}d|0{digito}+\.{digito}{1,15}|[-]0{digito}+\.{digito}{1,15}
+flotanteEmpiezaCero -?0{digito}+\.{digito}{1,7}
+dobleEmpiezaCero -?0{digito}+\.{digito}{1,15}
 /*doble {entero}{parte_exponente}|{digito}*\.{digito}*{parte_exponente}|\.{digito}*{parte_exponente}*/
 
 /*numeros que comienzan en 0, excepto el 0*/
@@ -21,12 +21,14 @@ digito 0|{digito_no_zero}
 entero 0|{digito_no_zero}{digito}*
 
 /*numero con varios puntos o fallas en la coma*/
-errorNumeroFlotanteConComa [-]*{digito}+\,{digito}{1,7}
-errorNumeroDobleConComa [-]*{digito}+\,{digito}{1,15}
+errorNumeroFlotanteConComa -?{digito}+\,{digito}{1,7}
+errorNumeroDobleConComa -?{digito}+\,{digito}{1,15}
 
 /*mas de una coma o punto*/
-errorMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]
+errorMasDeUnPuntoOComa -?{digito}+[\.|\,]{digito}*[\.|\,]
 /*errorDobleMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]*/
+
+identificador [a-zA-Z\_]+[a-zA-Z0-9\_]*
 
 /*identificar identificador no valido *|[@|&|#]*[{identificador}|"@"|"&"|"#"]+   |[\@|\&|\#]*[{identificador}|\@|\&|\#]+*/
 errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
@@ -48,15 +50,13 @@ funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"
 
 tipo_dato "doble"|"flotante"|"entero"|"booleano"|"Cadena"|"corto"|"largo"|"byte"|"caracter"
 
-identificador [a-zA-Z\_][a-zA-Z0-9\_]*
-
 indicador_exponente e|E	
 parte_exponente {indicador_exponente}(\+|\-){digito}*
 
 /*termina en f es float*/
-numeroFlotante [-]*{digito}+\.{digito}{1,7}
+numeroFlotante -?{digito}+\.{digito}{1,7}
 /*termina en d o termina en numero es doble*/
-numeroDoble [-]*{digito}+\.{digito}{1,15}
+numeroDoble -?{digito}+\.{digito}{1,15}
 
 error_declaracion {tipo_dato}[ ]+{identificador}[ ]+{identificador}
 
