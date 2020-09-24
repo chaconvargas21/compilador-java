@@ -39,7 +39,7 @@ publico estatico vacio main ( String [ ]  args )  {
 	flotante doblePorDefectoPuntoComa = 1.2,56;
 
 	flotante numeroVariosPuntos = 5.26.35;	
-	flotante numeroEmpiezaCero = 0045;
+	flotante numeroEmpiezaCero = 0045.23;
 	flotante nempieza0 = 010.15; 
 	flotante dobleEmpiezaCero = 001.12;
 	flotante dobleEmpiezaCero = 00.12;
@@ -53,15 +53,18 @@ publico estatico vacio main ( String [ ]  args )  {
 
 	Cadena declaracion variable = "hola";
 	entero entero primario= 3;
+	entero en = -3:
+	entero en2 = -03;
+	entero en3 = -003;
 
   si(esPrimo(9))
-    System.out.println("Es primo: 9");
+    Sistema.salida.imprimirlinea("Es primo: 9");
 
   si(esPrimo(3))
-    System.out.println("Es primo: 3");
+    Sistema.salida.imprimirlinea("Es primo: 3");
 
   si(esPrimo(17))
-    System.out.println("Es primo: 17");
+    Sistema.salida.imprimirlinea("Es primo: 17");
 
   corto numero1 = 5;
   char pruebachar = 'd';

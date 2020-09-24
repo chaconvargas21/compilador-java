@@ -4,7 +4,7 @@ publico clase Mientras {
  
         entero num=1;
  
-        mientras (num<=100){
+        mientras (num<=50){
             System.out.println(num);
             //Incrementamos num
             num++;
