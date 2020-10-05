@@ -2,18 +2,25 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "compilador.tab.h"
+#include "parser.tab.h"
 %}
+
+flotanteEmpiezaCero -?0{digito}+\.{digito}{1,7}
+dobleEmpiezaCero -?0{digito}+\.{digito}{1,15}
+enteroEmpiezaCero ^0{entero}
+errorNumeroFlotanteConComa -?{digito}+\,{digito}{1,7}
+errorNumeroDobleConComa -?{digito}+\,{digito}{1,15}
+errorMasDeUnPuntoOComa -?{digito}+[\.|\,]{digito}*[\.|\,]
+errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
+error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
 
 identificador [a-zA-Z\_][a-zA-Z0-9\_]*
 
 digito_no_zero [1-9]
 digito 0|{digito_no_zero}
-entero 0|{digito_no_zero}{digito}*
-
-indicador_exponente e|E	
-parte_exponente {indicador_exponente}(\+|\-){digito}+
-punto_flotante {digito}+{parte_exponente}|{digito}+\.{digito}*{parte_exponente}?|\.{digito}+{parte_exponente}?
+entero 0|{digito_no_zero}*{digito}*
+numeroFlotante -?{digito}+\.{digito}{1,7}
+numeroDoble -?{digito}+\.{digito}{1,15}
 
 booleano "verdadero"|"falso"	
 
@@ -26,36 +33,10 @@ nulo "nulo"
 palabra_clave  "abstracto"|"afirmar"|"booleano"|"interrupcion"|"byte"|"caso"|"captura"|"caracter"|"clase"|"constante"|"continuar"|"defecto"|"hacer"|"doble"|"sino"|"enumeracion"|"exportar"|"extiende"|"final"|"finalmente"|"flotante"|"para"|"ir"|"si"|"implementar"|"importar"|"envezde"|"entero"|"interfaz"|"largo"|"modulo"|"nativo"|"nuevo"|"paquete"|"privado"|"protegido"|"publico"|"requerir"|"retornar"|"corto"|"estatico"|"strictfp"|"super"|"interruptor"|"sincronizado"|"esto"|"lanzar"|"lanza"|"transitorio"|"intentar"|"variable"|"vacio"|"volatil"|"mientras"		
 
 funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"tanghiperb"|"cbrt"|"ceil"|"raizcuadrada"|"cosenohiperb"|"senohiperb"|"exp"|"random"|"floor"|"maximo"|"minimo"|"redondear"|"seno"|"coseno"|"append"|"cerrar"|"flush"|"imprimir"|"imprimirformato"|"imprimirlinea"|"escribir"|"E"|"PI"|"error"|"entrada"|"salida"
-
-/*termina en f es float*/
-numeroFlotante [-]*{digito}+\.{digito}{1,7}f
-/*termina en d o termina en numero es doble*/
-numeroDoble [-]*{digito}+\.{digito}{1,15}d|[-]*{digito}+\.{digito}{1,15}
-
-flotanteEmpiezaCero 0{digito}+\.{digito}{1,7}f|[-]0{digito}+\.{digito}{1,7}f 
-dobleEmpiezaCero 0{digito}+\.{digito}{1,15}d|[-]0{digito}+\.{digito}{1,15}d|0{digito}+\.{digito}{1,15}|[-]0{digito}+\.{digito}{1,15}
-/*doble {entero}{parte_exponente}|{digito}*\.{digito}*{parte_exponente}|\.{digito}*{parte_exponente}*/
-
-/*numeros que comienzan en 0, excepto el 0*/
-enteroEmpiezaCero 0{digito}+
-
-/*numero con varios puntos o fallas en la coma*/
-errorNumeroFlotanteConComa [-]*{digito}+\,{digito}{1,7}f
-errorNumeroDobleConComa [-]*{digito}+\,{digito}{1,15}d|[-]*{digito}+\,{digito}{1,15}
-
-/*mas de una coma o punto*/
-errorFlotanteMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]f
-errorDobleMasDeUnPuntoOComa [-]*{digito}+[\.|\,]{digito}*[\.|\,]d|[-]*{digito}+[\.|\,]{digito}*[\.|\,]
-
-/*identificar identificador no valido *|[@|&|#]*[{identificador}|"@"|"&"|"#"]+   |[\@|\&|\#]*[{identificador}|\@|\&|\#]+*/
-errorIdentificador [0-9@#][a-zA-Z\_@#][a-zA-Z0-9\_@#]*
-
-/*errorEscritura*/
-errorPalabraReservada ^["mientras"|"para"|"si"|"sino"|"caso"|"main"][ ]*[\(|\{|\:]
-/* Sección REGLAS */ 
 %%
 {entero}	 {return ENTERO_LITERAL;}
-{punto_flotante} 	 {return FLOTANTE_LITERAL;}
+{numeroFlotante} 	 {return FLOTANTE_LITERAL;}
+{numeroDoble} 	 {return DOBLE_LITERAL;}
 {caracter}	 {return CARACTER_LITERAL;}
 {cadena}  	 {return CADENA_LITERAL;}
 {booleano} 	 {return BOOLEANO_LITERAL;}
@@ -103,11 +84,10 @@ errorPalabraReservada ^["mientras"|"para"|"si"|"sino"|"caso"|"main"][ ]*[\(|\{|\
 "&=" {return OP_ASIG_BIN_AND;}
 "^=" {return OP_ASIG_BIN_XOR;}
 "|=" {return OP_ASIG_BIN_OR;}
+"envezde" {return OP_ENVEZDE;}
 
 "?" {return INTERROGACION;}
 ":" {return DOS_PUNTOS;}
-"envezde" {return OP_ENVEZDE;}
-
 ";" {return PUNTO_COMA;}
 "," {return COMA;}
 "." {return PUNTO;}
@@ -122,23 +102,15 @@ errorPalabraReservada ^["mientras"|"para"|"si"|"sino"|"caso"|"main"][ ]*[\(|\{|\
 
 {identificador}	 {return IDENTIFICADOR;}
 
-
+{error_declaracion} { printf("Error, error del tipo error_declaracion: %s\n",yytext); }
 {enteroEmpiezaCero}	 { printf("Error, numero entero empieza con 0 y no es 0: %s\n",yytext); }
-
 {errorNumeroFlotanteConComa}	 { printf("Error, flotante con coma : %s\n",yytext); }
-
 {errorNumeroDobleConComa}	 { printf(" Error, doble con coma : %s\n",yytext); }
-
 {errorFlotanteMasDeUnPuntoOComa} { printf("Error, flotante mas de una coma o punto : %s\n",yytext); }
-
 {errorDobleMasDeUnPuntoOComa} { printf("Error, doble mas de una coma o punto : %s\n",yytext); }
-
 {flotanteEmpiezaCero}	 { printf("Error, numero flotante empieza con 0 y no es 0. : %s\n",yytext); }
-
 {dobleEmpiezaCero}	 { printf("Error, numero doble empieza con 0 y no es 0. : %s\n",yytext); }
-
 {errorPalabraReservada}	 { printf("Error, palabra reservada mal escrita : %s\n",yytext); }
-
 {errorIdentificador}	 { printf("Error, la escritura numero o variable no es valido : %s\n",yytext); }
 
 %%
