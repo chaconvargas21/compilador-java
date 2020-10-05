@@ -1,0 +1,13 @@
+{ 
+    entero l[] = nuevo entero[3] ; 
+    l[0] = 9;
+    l[1] = 4;
+    l[2] = 1;
+    
+    entero mayor = l[0] ;
+    para(entero i=1; i<3; i++ ) {
+        si( l[i] > mayor ) {
+            mayor = l[i] ;
+        }
+    }   
+} 

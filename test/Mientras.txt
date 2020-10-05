@@ -1,0 +1,7 @@
+{
+    entero num=1;
+    mientras (num<=50){
+        num++;
+    }
+}
+

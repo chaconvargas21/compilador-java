@@ -1,0 +1,4 @@
+{
+    entero num1=10;
+    entero num2=5;
+}

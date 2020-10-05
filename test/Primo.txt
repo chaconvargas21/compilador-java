@@ -1,7 +1,4 @@
-importar java.lang.Matematica;
-publico clase Primo { 
-
-publico estatico booleano esPrimo(entero numero){
+{
   entero contador = 2;
   booleano primo=verdadero;
   mientras ((primo) && (contador!=numero)){
@@ -12,62 +9,3 @@ publico estatico booleano esPrimo(entero numero){
   retornar primo;
 }
 
-publico estatico vacio main ( String [ ]  args )  { 
-
-
-	doble doble1 = 0.123456789d;
-	doble doble2 = 01.12356789d;
-	float sinCategorizar = 1.2659;
-	float empieza0fallaSinCategorizar = 05.456789;
-
-	doble doble2coma = 1,12356789d;
-	float floatComa = 1,2659f;
-	float dobleComaSinAsignar = 1,2659;
-
-	flotante normal = 1.256f;
-	flotante puntos = 1.2.56f;
-	flotante puntos2 = 1..56f;
-	flotante numerooma = 5,45f;
-
-	flotante doblePuntoFlotante = 1.25.6f;
-	flotante puntosOComaDoble = 1.2.5.6d;
-	flotante doblePorDefectoPuntoComa = 1.2,56;
-
-	flotante numeroVariosPuntos = 5.26.35f;	
-	flotante numeroEmpiezaCero = 0045f;
-	flotante nempieza0_1 = 010.15f; 
-	flotante dobleEmpiezaCero = 001.12f;
-	flotante dobleEmpiezaCero = 00.12f;
-	entero numeroConLetra = 3530O;
-
-	entero 0variableMalEscrita = 3;
-	float @varibleMalEscrita2 = f;
-	entero numeroConLetra = 3O0; 
-
-	entero pollitos = 3;
-
-	polli tos = pollitos + 1;
-
-	mientras( )
-	
-	is( )
-
-  si(esPrimo(9))
-    System.out.println("Es primo: 9");
-
-  si(esPrimo(3))
-    System.out.println("Es primo: 3");
-
-  si(esPrimo(17))
-    System.out.println("Es primo: 17");
-
-  corto numero1 = 5;
-  char pruebachar = 'd';
-
-  doble a = -3;
-  doble a1 = Matematica.absoluto(a);
-  Cadena cad1 = "hola mundo";
-
-}
-
-}
