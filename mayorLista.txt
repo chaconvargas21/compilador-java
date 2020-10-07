@@ -1,0 +1,72 @@
+{ 	
+	flotante numero1 = 4.0;
+	flotante numero2 = 4.0, numero3 = 5;
+
+	entero ent1 = 4;
+	ent1++;
+	++ent1;
+	--ent1;
+	ent1--;
+
+	entero numEnte12 = (entero) numero1;
+
+	flotante numero12 = numero1 + numero -3;
+	flotante numero12mult = numero1 * numero;
+
+	entero l[] = nuevo entero[3] ; 
+	l[0] = 9;
+	l[1] = 4;
+	l[2] = 1;
+    
+    	entero mayor = l[0] ;
+	entero contador = 1;
+
+	mientras (contador < 3){
+		si(l[contador] > mayor0){
+			mayor = l[contador];
+		}
+		contador++;
+    	}
+
+	entero prueba = 0;
+	si(prueba == 1)
+	{
+		mientras (contador < 3)
+		{
+			si(l[contador] > mayor0)
+			{
+				mayor = l[contador];
+				interrupcion;
+			}
+			contador++;
+    		}
+	}
+	sino{
+		entero contsinomientras = 3;
+		mientras (contador < 3)
+		{
+			
+			si(l[contador] > mayor0 || contsinomientras == contador)
+			{
+				mayor = l[contador];
+				continuar;
+			}
+			contador++;
+    		}
+
+		si(l[contador] > mayor0 && contsinomientras == contador)
+		{
+				mayor = l[contador];
+				
+				continuar;
+		}
+		contador++;
+	}
+					
+
+
+	retornar mayor;
+
+
+
+} 

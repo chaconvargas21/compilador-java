@@ -69,15 +69,7 @@ tipoArreglo:
       | tipoArreglo CORCHETE_INI CORCHETE_FIN
       | nombre CORCHETE_INI CORCHETE_FIN;
 nombre: 
-      nombreSimple | nombreCalificado;
-nombreSimple: 
       IDENTIFICADOR;
-nombreCalificado: 
-      nombre PUNTO IDENTIFICADOR;
-
-/*PAQUETES*/
-
-/*MODIFICADORES*/
 
 /*DECLARACION DE CLASES*/
 
@@ -96,16 +88,6 @@ inicializadorVariable:
       expresion 
       | inicializadorArreglo;
 
-/*DECLARACION DE METODOS*/
-
-parametro: 
-      tipo declaradorVariableId;
-
-/*INICIALIZADOR ESTATICO*/
-
-/*CONSTRUCTOR*/
-
-/*INTERFACES*/
 
 /*INICIALIZADOR ARREGLOS*/
 
@@ -126,52 +108,34 @@ bloque:
       | LLAVE_INI LLAVE_FIN;
 sentenciasBloque: 
       sentenciasBloque sentenciaBloque 
-      | sentenciaBloque 
+      | sentenciaBloque;
 sentenciaBloque:  
       sentenciaDeclaracionVariableLocal 
       | sentencia;
 sentenciaDeclaracionVariableLocal: 
       declaracionVariableLocal PUNTO_COMA {printf("la declaracion de variable local es valida\n");};
 sentencia:
-	sentenciaSinSeguimientoSubsentencia 
-      	| sentenciaEtiquetada 
+	sentenciaSinSeguimientoSubsentencia
 	| sentenciaSiLuego 
 	| sentenciaSiLuegoSino 
-	| sentenciaMientras 
-	| sentenciaPara;
+	| sentenciaMientras;
 sentenciaNoCorto:
 	sentenciaSinSeguimientoSubsentencia 
-      | sentenciaEtiquetadaNoCorto 
 	| sentenciaSiLuegoSinoNoCorto 
-	| sentenciaMientrasNoCorto 
-	| sentenciaParaNoCorto;
+	| sentenciaMientrasNoCorto;
 sentenciaSinSeguimientoSubsentencia:
       bloque 
       | sentenciaVacia 
       | sentenciaExpresion 
-      | sentenciaInterruptor 
-      | sentenciaHacer 
       | sentenciaInterrupcion 
       | sentenciaContinuar 
       | sentenciaRetornar 
-      | sentenciaSincronizado 
-      | sentenciaLanzar 
-      | sentenciaIntentar;
+      | sentenciaLanzar ;
 
 /*SENTENCIA VACIA*/
-
 sentenciaVacia: 
       PUNTO_COMA;
 
-/*SENTENCIA ETIQUETADA*/
-
-sentenciaEtiquetada: 
-      IDENTIFICADOR DOS_PUNTOS sentencia;
-
-/*SENTENCIA ETIQUETADA NO CORTA*/
-
-sentenciaEtiquetadaNoCorto: 
-      IDENTIFICADOR DOS_PUNTOS sentenciaNoCorto;
 
 /*SENTENCIA EXPRESION*/
 
@@ -179,15 +143,12 @@ sentenciaExpresion:
 	expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");};
 
 /*SENTENCIA DECLARACION */
-
 expresionDeclaracion:
 	asignacion 
       	| expresionPreIncremento 
 	| expresionPreDecremento 
 	| expresionPostIncremento 
-	| expresionPostDecremento 
-	| invocacionMetodo 
-	| expresionCreacionInstanciaClase;
+	| expresionPostDecremento ;
 
 /*SENTENCIA SI-SINO*/
 
@@ -198,27 +159,6 @@ sentenciaSiLuegoSino:
 sentenciaSiLuegoSinoNoCorto:
       SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto{printf("la sentencia si luego sino no corto es valida\n");};
 
-/*SENTENCIA INTERRUPTOR*/
-
-sentenciaInterruptor:
-      INTERRUPTOR PARENTESIS_INI expresion PARENTESIS_FIN bloqueInterruptor {printf("la sentencia interruptor es valida\n");};
-bloqueInterruptor:
-      LLAVE_INI gruposSentenciaBloqueInterruptor etiquetasInterruptor LLAVE_FIN 
-      | LLAVE_INI etiquetasInterruptor LLAVE_FIN 
-      | LLAVE_INI gruposSentenciaBloqueInterruptor LLAVE_FIN 
-      | LLAVE_INI LLAVE_FIN ;
-gruposSentenciaBloqueInterruptor:
-      gruposSentenciaBloqueInterruptor grupoSentenciaBloqueInterruptor 
-      | grupoSentenciaBloqueInterruptor ; 
-grupoSentenciaBloqueInterruptor:
-	etiquetasInterruptor sentenciasBloque ;
-etiquetasInterruptor:
-	etiquetasInterruptor etiquetaInterruptor 
-      | etiquetaInterruptor ; 
-etiquetaInterruptor:
-	CASO expresionConstante DOS_PUNTOS 
-      | DEFECTO DOS_PUNTOS ;
-
 /*SENTENCIA MIENTRAS*/
 
 sentenciaMientras:
@@ -226,37 +166,6 @@ sentenciaMientras:
 sentenciaMientrasNoCorto:
       MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");};
 
-
-/*SENTENCIA HACER*/
-
-sentenciaHacer:
-	HACER sentencia MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN PUNTO_COMA {printf("la sentencia hacer es valida\n");};
-
-/*SENTENCIA PARA*/
-sentenciaPara:
-	PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia {printf("la sentencia para es valida\n");};
-sentenciaParaNoCorto:
-	PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto
-      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
-      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
-      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
-      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia para no corto es valida\n");};
-iniciarPara: 
-      listaExpresionesDeclaracion
-       | declaracionVariableLocal;
-actualizarPara: 
-      listaExpresionesDeclaracion;
-listaExpresionesDeclaracion: 
-      listaExpresionesDeclaracion COMA expresionDeclaracion 
-      | expresionDeclaracion;
 
 /* SENTENCIA INTERRUPCION */
 
@@ -281,36 +190,12 @@ sentenciaRetornar:
 sentenciaLanzar:
 	LANZAR expresion PUNTO_COMA;
 
-/* SENTENCIA SINCRONIZADO */
-
-sentenciaSincronizado:
-	SINCRONIZADO PARENTESIS_INI expresion PARENTESIS_FIN bloque;
-
-/* SENTENCIA INTENTAR */
-
-sentenciaIntentar:
-	INTENTAR bloque capturas 
-      | INTENTAR bloque capturas finalmente
-      | INTENTAR bloque finalmente;
-capturas:
-	capturas clausulaCapturar 
-      | clausulaCapturar;
-clausulaCapturar:
-	CAPTURA PARENTESIS_INI parametro PARENTESIS_FIN bloque;
-finalmente:
-	FINALMENTE bloque;
-
 /*EXPRESIONES*/
-
-expresionConstante: 
-      expresion;
-expresion: 
-      expresionAsignacion;
-expresionAsignacion:
+expresion:
 	asignacion
 	| expresionCondicional;
 asignacion:
-      ladoIzq operadorAsignacion expresionAsignacion;
+      ladoIzq operadorAsignacion expresion;
 ladoIzq:
 	nombre
 	| accesoCampo
@@ -368,10 +253,7 @@ expresionRelacional:
       | expresionRelacional OP_ENVEZDE tipoReferencia;
 
 expresionDesplazamiento:
-	expresionAditiva
-	| expresionDesplazamiento OP_BIN_DESPLAZAMIENTO_IZQ expresionAditiva 
-	| expresionDesplazamiento OP_BIN_DESPLAZAMIENTO_DER expresionAditiva
-	| expresionDesplazamiento OP_DESPLAZAMIENTO_DER_LLENADO_CERO expresionAditiva;
+	expresionAditiva;
 
 /*EXPRESIONES ARITMETICAS */
 
@@ -436,25 +318,6 @@ accesoArreglo:
 	nombre CORCHETE_INI expresion CORCHETE_FIN
 	| primarioNoNuevoArreglo CORCHETE_INI expresion CORCHETE_FIN;
 
-/*INVOCACION METODO*/
-
-invocacionMetodo:
-	nombre PARENTESIS_INI listaArgumentos PARENTESIS_FIN
-	| nombre PARENTESIS_INI PARENTESIS_FIN
-	| primario PUNTO IDENTIFICADOR PARENTESIS_INI listaArgumentos PARENTESIS_FIN
-      | primario PUNTO IDENTIFICADOR PARENTESIS_INI PARENTESIS_FIN
-      | SUPER PUNTO IDENTIFICADOR PARENTESIS_INI listaArgumentos PARENTESIS_FIN
-      | SUPER PUNTO IDENTIFICADOR PARENTESIS_INI PARENTESIS_FIN;
-
-/*EXPRESIONES CREACION INSTANCIA CLASE*/
-
-expresionCreacionInstanciaClase:
-	NUEVO tipoClase PARENTESIS_INI listaArgumentos PARENTESIS_FIN 
-      | NUEVO tipoClase PARENTESIS_INI PARENTESIS_FIN;
-listaArgumentos:
-	listaArgumentos COMA expresion
-      | expresion;
-
 /*PRIMARIO*/
 
 primario: 
@@ -464,10 +327,8 @@ primarioNoNuevoArreglo:
 	literal 
 	| ESTO 
 	| PARENTESIS_INI expresion PARENTESIS_FIN 
-	| expresionCreacionInstanciaClase 
 	| accesoCampo 
-	| accesoArreglo 
-	| invocacionMetodo;
+	| accesoArreglo;
 
 /*EXPRESIONES CREACION ARREGLO*/
 
