@@ -129,8 +129,7 @@ sentenciaSinSeguimientoSubsentencia:
       | sentenciaExpresion 
       | sentenciaInterrupcion 
       | sentenciaContinuar 
-      | sentenciaRetornar 
-      | sentenciaLanzar ;
+      | sentenciaRetornar;
 
 /*SENTENCIA VACIA*/
 sentenciaVacia: 
@@ -184,11 +183,6 @@ sentenciaContinuar:
 sentenciaRetornar:
 	RETORNAR expresion PUNTO_COMA 
       | RETORNAR PUNTO_COMA;
-
-/* SENTENCIA LANZAR */
-
-sentenciaLanzar:
-	LANZAR expresion PUNTO_COMA;
 
 /*EXPRESIONES*/
 expresion:
@@ -245,14 +239,14 @@ expresionIgualdad:
       | expresionIgualdad OP_IGUAL expresionRelacional
       | expresionIgualdad OP_DIFERENTE expresionRelacional;
 expresionRelacional:
-	expresionDesplazamiento
-      | expresionRelacional OP_MAYOR expresionDesplazamiento
-      | expresionRelacional OP_MENOR expresionDesplazamiento
-      | expresionRelacional OP_MAYOR_IGUAL expresionDesplazamiento
-      | expresionRelacional OP_MENOR_IGUAL expresionDesplazamiento
+	expresionOperacional
+      | expresionRelacional OP_MAYOR expresionOperacional
+      | expresionRelacional OP_MENOR expresionOperacional
+      | expresionRelacional OP_MAYOR_IGUAL expresionOperacional
+      | expresionRelacional OP_MENOR_IGUAL expresionOperacional
       | expresionRelacional OP_ENVEZDE tipoReferencia;
 
-expresionDesplazamiento:
+expresionOperacional:
 	expresionAditiva;
 
 /*EXPRESIONES ARITMETICAS */
