@@ -8,6 +8,20 @@ int estado;
 int agregar_palabra(int tipo, char *palabra);
 int buscar_palabra(char *palabra);
 %}
+identificador [a-zA-Z\_][a-zA-Z0-9\_]*
+
+digito_no_zero [1-9]
+digito 0|{digito_no_zero}
+entero 0|{digito_no_zero}*{digito}*
+numeroFlotante -?{digito}+\.{digito}{1,7}
+numeroDoble -?{digito}+\.{digito}{1,15}
+
+booleano "verdadero"|"falso"	
+caracter \'.\'
+cadena \".*\"
+nulo "nulo"
+palabra_clave  "abstracto"|"afirmar"|"booleano"|"interrupcion"|"byte"|"caso"|"captura"|"caracter"|"clase"|"constante"|"continuar"|"defecto"|"hacer"|"doble"|"sino"|"enumeracion"|"exportar"|"extiende"|"final"|"finalmente"|"flotante"|"para"|"ir"|"si"|"implementar"|"importar"|"envezde"|"entero"|"interfaz"|"largo"|"modulo"|"nativo"|"nuevo"|"paquete"|"privado"|"protegido"|"publico"|"requerir"|"retornar"|"corto"|"estatico"|"strictfp"|"super"|"interruptor"|"sincronizado"|"esto"|"lanzar"|"lanza"|"transitorio"|"intentar"|"variable"|"vacio"|"volatil"|"mientras"		
+funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"tanghiperb"|"cbrt"|"ceil"|"raizcuadrada"|"cosenohiperb"|"senohiperb"|"exp"|"random"|"floor"|"maximo"|"minimo"|"redondear"|"seno"|"coseno"|"append"|"cerrar"|"flush"|"imprimir"|"imprimirformato"|"imprimirlinea"|"escribir"|"E"|"PI"|"error"|"entrada"|"salida"
 
 flotanteEmpiezaCero -?0{digito}+\.{digito}{1,7}
 dobleEmpiezaCero -?0{digito}+\.{digito}{1,15}
@@ -18,25 +32,6 @@ errorMasDeUnPuntoOComa -?{digito}+[\.|\,]{digito}*[\.|\,]
 errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
 error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
 
-identificador [a-zA-Z\_][a-zA-Z0-9\_]*
-
-digito_no_zero [1-9]
-digito 0|{digito_no_zero}
-entero 0|{digito_no_zero}*{digito}*
-numeroFlotante -?{digito}+\.{digito}{1,7}
-numeroDoble -?{digito}+\.{digito}{1,15}
-
-booleano "verdadero"|"falso"	
-
-caracter \'.\'
-
-cadena \".*\"
-
-nulo "nulo"
-
-palabra_clave  "abstracto"|"afirmar"|"booleano"|"interrupcion"|"byte"|"caso"|"captura"|"caracter"|"clase"|"constante"|"continuar"|"defecto"|"hacer"|"doble"|"sino"|"enumeracion"|"exportar"|"extiende"|"final"|"finalmente"|"flotante"|"para"|"ir"|"si"|"implementar"|"importar"|"envezde"|"entero"|"interfaz"|"largo"|"modulo"|"nativo"|"nuevo"|"paquete"|"privado"|"protegido"|"publico"|"requerir"|"retornar"|"corto"|"estatico"|"strictfp"|"super"|"interruptor"|"sincronizado"|"esto"|"lanzar"|"lanza"|"transitorio"|"intentar"|"variable"|"vacio"|"volatil"|"mientras"		
-
-funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"tanghiperb"|"cbrt"|"ceil"|"raizcuadrada"|"cosenohiperb"|"senohiperb"|"exp"|"random"|"floor"|"maximo"|"minimo"|"redondear"|"seno"|"coseno"|"append"|"cerrar"|"flush"|"imprimir"|"imprimirformato"|"imprimirlinea"|"escribir"|"E"|"PI"|"error"|"entrada"|"salida"
 %%
 {entero}	     {estado = ENTERO_LITERAL;	    agregar_palabra(estado, yytext);    return ENTERO_LITERAL;}
 {numeroFlotante} {estado = FLOTANTE_LITERAL;	agregar_palabra(estado, yytext);    return FLOTANTE_LITERAL;}
@@ -158,6 +153,16 @@ funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"
 "]" {estado = CORCHETE_FIN;	    agregar_palabra(estado, yytext);    return CORCHETE_FIN;}
 
 {funcion_primitiva}	 {estado = FUNC_PRIMITIVA;	agregar_palabra(estado, yytext);    return FUNC_PRIMITIVA;}
+
+{error_declaracion}         { printf("Error en la linea %i, columna %i, declaracion de varible incorrecta: %s\n", numLineas, numCaracteres, yytext); }
+{enteroEmpiezaCero}	        { printf("Error en la linea %i, columna %i, numero  entero empieza con 0 y no es 0: %s\n", numLineas, numCaracteres, yytext); }
+{errorNumeroFlotanteConComa}	 { printf("Error en la linea %i, columna %i, flotante con coma : %s\n", numLineas,numCaracteres,yytext); }
+{errorNumeroDobleConComa}   { printf("Error en la linea %i, columna %i, doble con coma : %s\n", numLineas,numCaracteres,yytext); }
+{errorMasDeUnPuntoOComa}    { printf("Error en la linea %i, columna %i, numero com mas de una coma o punto : %s\n", numLineas, numCaracteres,yytext); }
+{flotanteEmpiezaCero}	    { printf("Error en la linea %i, columna %i, numero flotante empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
+{dobleEmpiezaCero}	        { printf("Error en la linea %i, columna %i, numero doble empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
+{errorIdentificador}	    { printf("Error en la linea %i, columna %i, la escritura numero o variable no es valido : %s\n", numLineas,numCaracteres,yytext); }
+
 {identificador}	     {estado = IDENTIFICADOR;	agregar_palabra(estado, yytext);    return IDENTIFICADOR;}
 
 \n
