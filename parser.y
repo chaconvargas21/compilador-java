@@ -11,7 +11,7 @@ int yyerror(char *s);
 /* Sección REGLAS */
 %token ENTERO_LITERAL FLOTANTE_LITERAL DOBLE_LITERAL CARACTER_LITERAL CADENA_LITERAL BOOLEANO_LITERAL NULO_LITERAL 
 
-%token ABSTRACTO AFIRMAR BOOLEANO INTERRUPCION BYTE CASO CAPTURA CARACTER CLASE CONSTANTE CONTINUAR DEFECTO HACER DOBLE SINO ENUMERACION EXPORTAR EXTIENDE FINAL FINALMENTE FLOTANTE PARA IR SI IMPLEMENTAR IMPORTAR ENTERO INTERFAZ LARGO MODULO NATIVO NUEVO PAQUETE PRIVADO PROTEGIDO PUBLICO REQUERIR RETORNAR CORTO ESTATICO STRICTFP SUPER INTERRUPTOR SINCRONIZADO ESTO LANZAR LANZA TRANSITORIO INTENTAR VARIABLE VACIO VOLATIL MIENTRAS
+%token ABSTRACTO AFIRMAR BOOLEANO INTERRUPCION BYTE CASO CAPTURA CARACTER CLASE CONSTANTE CONTINUAR DEFECTO HACER DOBLE SINO ENUMERACION EXPORTAR EXTIENDE FINAL FINALMENTE FLOTANTE PARA IR SI IMPLEMENTAR IMPORTAR ENTERO INTERFAZ LARGO MODULO NATIVO NUEVO PAQUETE PRIVADO PROTEGIDO PUBLICO REQUERIR RETORNAR CORTO ESTATICO STRICTFP SUPER INTERRUPTOR SINCRONIZADO ESTO LANZAR LANZA TRANSITORIO INTENTAR VARIABLE VACIO VOLATIL MIENTRAS PRINCIPAL ARGS
 
 %token OP_SUMA OP_RESTA OP_MULTIPLICACION OP_DIVISION OP_MODULO
 
@@ -34,75 +34,12 @@ int yyerror(char *s);
 /* Sección REGLAS */ 
 %%
 
-/*OBJETIVO*/
-
-objetivo:	
-      unidadCompilacion;
-
-/*LITERAL*/
-
-literal:	
-      ENTERO_LITERAL  
-      | FLOTANTE_LITERAL  
-      | DOBLE_LITERAL 
-      | BOOLEANO_LITERAL  
-      | CARACTER_LITERAL  
-      | CADENA_LITERAL 
-      | NULO_LITERAL;
-
-/*TIPO*/
-
-tipo:
-      tipoPrimitivo | tipoReferencia;
-tipoPrimitivo:	
-      tipoNumerico | BOOLEANO;
-tipoNumerico:
-      tipoIntegral | tipoPuntoFlotante;
-tipoIntegral:	
-      BYTE | CORTO | ENTERO | LARGO | CARACTER;
-tipoPuntoFlotante:	
-      FLOTANTE | DOBLE;
-tipoReferencia: 
-      tipoArreglo;
-tipoArreglo:  
-      tipoPrimitivo CORCHETE_INI CORCHETE_FIN 
-      | tipoArreglo CORCHETE_INI CORCHETE_FIN
-      | nombre CORCHETE_INI CORCHETE_FIN;
-nombre: 
-      IDENTIFICADOR;
-
-/*DECLARACION DE CLASES*/
-
-declaracionVariableLocal:
-	tipo declaradoresVariable;
-declaradoresVariable: 
-      declaradoresVariable COMA declaradorVariable
-      | declaradorVariable;	 
-declaradorVariable: 
-      declaradorVariableId 
-      | declaradorVariableId OP_ASIGNACION inicializadorVariable;
-declaradorVariableId: 
-      IDENTIFICADOR 
-      | declaradorVariableId CORCHETE_INI CORCHETE_FIN;
-inicializadorVariable: 
-      expresion 
-      | inicializadorArreglo;
-
-
-/*INICIALIZADOR ARREGLOS*/
-
-inicializadorArreglo:
-	PARENTESIS_INI inicializadoresVariable COMA PARENTESIS_FIN 
-	| PARENTESIS_INI inicializadoresVariable PARENTESIS_FIN 
-	| PARENTESIS_INI COMA PARENTESIS_FIN 
-	| PARENTESIS_INI PARENTESIS_FIN;
-inicializadoresVariable:
-	inicializadoresVariable	 COMA inicializadorVariable
-      | inicializadorVariable;
+unidadCompilacion: 
+      PUBLICO ESTATICO VACIO PRINCIPAL PARENTESIS_INI CADENA CORCHETE_INI CORCHETE_FIN ARGS PARENTESIS_FIN
+      bloque {printf("la unidad de compilacion se ejecuto correctamente\n");};
 
 /*BLOQUES Y SENTENCIAS*/
-unidadCompilacion: 
-      bloque {printf("la unidad de compilacion se ejecuto correctamente\n");};
+
 bloque: 
       LLAVE_INI sentenciasBloque LLAVE_FIN 
       | LLAVE_INI LLAVE_FIN;
@@ -118,36 +55,33 @@ sentencia:
 	sentenciaSinSeguimientoSubsentencia
 	| sentenciaSiLuego 
 	| sentenciaSiLuegoSino 
-	| sentenciaMientras;
+	| sentenciaMientras
+      | sentenciaPara;
 sentenciaNoCorto:
 	sentenciaSinSeguimientoSubsentencia 
 	| sentenciaSiLuegoSinoNoCorto 
-	| sentenciaMientrasNoCorto;
+	| sentenciaMientrasNoCorto
+      | sentenciaParaNoCorto;
 sentenciaSinSeguimientoSubsentencia:
       bloque 
-      | sentenciaVacia 
-      | sentenciaExpresion 
-      | sentenciaInterrupcion 
-      | sentenciaContinuar 
-      | sentenciaRetornar;
+      | sentenciaExpresion;
 
-/*SENTENCIA VACIA*/
-sentenciaVacia: 
-      PUNTO_COMA;
+/*DECLARACION DE VARIABLE*/
 
-
-/*SENTENCIA EXPRESION*/
-
-sentenciaExpresion: 
-	expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");};
-
-/*SENTENCIA DECLARACION */
-expresionDeclaracion:
-	asignacion 
-      	| expresionPreIncremento 
-	| expresionPreDecremento 
-	| expresionPostIncremento 
-	| expresionPostDecremento ;
+declaracionVariableLocal:
+	tipo declaradoresVariable;
+declaradoresVariable: 
+      declaradoresVariable COMA declaradorVariable
+      | declaradorVariable;	 
+declaradorVariable: 
+      declaradorVariableId 
+      | declaradorVariableId OP_ASIGNACION inicializadorVariable;
+declaradorVariableId: 
+      IDENTIFICADOR 
+      | declaradorVariableId CORCHETE_INI CORCHETE_FIN;
+inicializadorVariable: 
+      expresion 
+      | inicializadorArreglo;
 
 /*SENTENCIA SI-SINO*/
 
@@ -165,26 +99,46 @@ sentenciaMientras:
 sentenciaMientrasNoCorto:
       MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");};
 
+/*SENTENCIA PARA*/
 
-/* SENTENCIA INTERRUPCION */
+sentenciaPara:
+	PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia;
+sentenciaParaNoCorto:
+	PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI iniciarPara PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto;
+iniciarPara: listaExpresionesDeclaracion | declaracionVariableLocal;
+actualizarPara: listaExpresionesDeclaracion;
+listaExpresionesDeclaracion: 
+      listaExpresionesDeclaracion COMA expresionDeclaracion 
+      | expresionDeclaracion;
 
-sentenciaInterrupcion: 
-      INTERRUPCION IDENTIFICADOR PUNTO_COMA
-      | INTERRUPCION PUNTO_COMA;
+/*SENTENCIA EXPRESION*/
 
-/* SENTENCIA CONTINUAR */
+sentenciaExpresion: 
+	expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");};
 
-sentenciaContinuar:
-	CONTINUAR IDENTIFICADOR PUNTO_COMA 
-      | CONTINUAR PUNTO_COMA;
+/*SENTENCIA DECLARACION */
 
-/* SENTENCIA RETORNAR */
-
-sentenciaRetornar:
-	RETORNAR expresion PUNTO_COMA 
-      | RETORNAR PUNTO_COMA;
+expresionDeclaracion:
+	asignacion 
+      | expresionPreIncremento 
+	| expresionPreDecremento 
+	| expresionPostIncremento 
+	| expresionPostDecremento;
 
 /*EXPRESIONES*/
+
 expresion:
 	asignacion
 	| expresionCondicional;
@@ -246,10 +200,10 @@ expresionRelacional:
       | expresionRelacional OP_MENOR_IGUAL expresionOperacional
       | expresionRelacional OP_ENVEZDE tipoReferencia;
 
+/*EXPRESIONES ARITMETICAS */
+
 expresionOperacional:
 	expresionAditiva;
-
-/*EXPRESIONES ARITMETICAS */
 
 expresionAditiva:
 	expresionMultiplicativa  
@@ -271,46 +225,31 @@ expresionUnaria:
       | OP_RESTA expresionUnaria
 	| expresionUnariaNoMasMenos;
 
-/*EXPRESIONES INCREMENTO DECREMENTO*/
+/*EXPRESIONES PRE INCREMENTO DECREMENTO*/
 
 expresionPreIncremento:
 	OP_INCREMENTO expresionUnaria;
 expresionPreDecremento:
 	OP_DECREMENTO expresionUnaria;
+
+/*EXPRESIONES UNARIAS SIN MAS O MENOS*/
+
 expresionUnariaNoMasMenos:
 	expresionSufijo
       | OP_BIN_COMPLEMENTO expresionUnaria
-      | OP_LOG_NOT expresionUnaria
-      | expresionCast;
+      | OP_LOG_NOT expresionUnaria;
 expresionSufijo:
 	primario 
       | nombre
       | expresionPostIncremento
       | expresionPostDecremento;
+
+/*EXPRESIONES POST INCREMENTO DECREMENTO*/
+
 expresionPostIncremento:
 	expresionSufijo OP_INCREMENTO;
 expresionPostDecremento:
 	expresionSufijo OP_DECREMENTO;
-
-/*EXPRESIONES CAST*/
-
- expresionCast:
-      PARENTESIS_INI tipoPrimitivo dimensiones PARENTESIS_FIN expresionUnaria
-      | PARENTESIS_INI tipoPrimitivo PARENTESIS_FIN expresionUnaria
-      | PARENTESIS_INI expresion PARENTESIS_FIN expresionUnariaNoMasMenos
-	| PARENTESIS_INI nombre dimensiones PARENTESIS_FIN expresionUnariaNoMasMenos;
-
-/*ACCESO CAMPO*/
-
-accesoCampo: 
-	primario PUNTO IDENTIFICADOR
-	SUPER PUNTO IDENTIFICADOR;
-
-/*ACCESO ARREGLO*/
-
-accesoArreglo: 
-	nombre CORCHETE_INI expresion CORCHETE_FIN
-	| primarioNoNuevoArreglo CORCHETE_INI expresion CORCHETE_FIN;
 
 /*PRIMARIO*/
 
@@ -323,6 +262,17 @@ primarioNoNuevoArreglo:
 	| PARENTESIS_INI expresion PARENTESIS_FIN 
 	| accesoCampo 
 	| accesoArreglo;
+
+/*INICIALIZADOR ARREGLOS*/
+
+inicializadorArreglo:
+	PARENTESIS_INI inicializadoresVariable COMA PARENTESIS_FIN 
+	| PARENTESIS_INI inicializadoresVariable PARENTESIS_FIN 
+	| PARENTESIS_INI COMA PARENTESIS_FIN 
+	| PARENTESIS_INI PARENTESIS_FIN;
+inicializadoresVariable:
+	inicializadoresVariable	 COMA inicializadorVariable
+      | inicializadorVariable;
 
 /*EXPRESIONES CREACION ARREGLO*/
 
@@ -340,7 +290,59 @@ dimensiones:
 	dimensiones CORCHETE_INI CORCHETE_FIN
       | CORCHETE_INI CORCHETE_FIN;
 
+/*ACCESO CAMPO*/
+
+accesoCampo: 
+	primario PUNTO IDENTIFICADOR
+	SUPER PUNTO IDENTIFICADOR;
+
+/*ACCESO ARREGLO*/
+
+accesoArreglo: 
+	nombre CORCHETE_INI expresion CORCHETE_FIN
+	| primarioNoNuevoArreglo CORCHETE_INI expresion CORCHETE_FIN;
+
+/*LITERAL*/
+
+literal:	
+      ENTERO_LITERAL  
+      | FLOTANTE_LITERAL  
+      | DOBLE_LITERAL 
+      | BOOLEANO_LITERAL  
+      | CARACTER_LITERAL  
+      | CADENA_LITERAL 
+      | NULO_LITERAL;
+
+/*TIPO*/
+
+tipo:
+      tipoPrimitivo | tipoReferencia;
+tipoPrimitivo:	
+      tipoNumerico | BOOLEANO;
+tipoNumerico:
+      tipoIntegral | tipoPuntoFlotante;
+tipoIntegral:	
+      BYTE | CORTO | ENTERO | LARGO | CARACTER;
+tipoPuntoFlotante:	
+      FLOTANTE | DOBLE;
+tipoReferencia: 
+      tipoArreglo;
+tipoArreglo:  
+      tipoPrimitivo CORCHETE_INI CORCHETE_FIN 
+      | tipoArreglo CORCHETE_INI CORCHETE_FIN
+      | nombre CORCHETE_INI CORCHETE_FIN;
+nombre: 
+      IDENTIFICADOR;
+
+/*ERRORES SEMANTICOS*/
+
+/*LLAVES FALTANTES*/
+bloque: 
+      LLAVE_INI sentenciasBloque 
+      | LLAVE_INI {printf("ERROR : \n");};
+
 %%
+
 /* Sección CODIGO USUARIO */
 FILE *yyin;
 int main() {

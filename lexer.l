@@ -100,6 +100,9 @@ funcion_primitiva "absoluto"|"arcoseno"|"arcotangente"|"arcocoseno"|"tangente"|"
 "volatil"      {estado = VOLATIL;	    agregar_palabra(estado, yytext);    return VOLATIL;}
 "mientras"     {estado = MIENTRAS;	    agregar_palabra(estado, yytext);    return MIENTRAS;}
 
+"principal"    {estado = PRINCIPAL;	    agregar_palabra(estado, yytext);    return PRINCIPAL;}
+"args"         {estado = ARGS;	        agregar_palabra(estado, yytext);    return ARGS;}
+
 "+" {estado = OP_SUMA;	        agregar_palabra(estado, yytext);    return OP_SUMA;}	
 "-" {estado = OP_RESTA;	        agregar_palabra(estado, yytext);    return OP_RESTA;}	
 "*" {estado = OP_MULTIPLICACION;	agregar_palabra(estado, yytext);    return OP_MULTIPLICACION;}	
