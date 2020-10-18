@@ -1,4 +1,4 @@
-{
+publico estatico vacio principal(cadena []args){
   entero contador = 2;
   booleano primo=verdadero;
   mientras ((primo) && (contador!=numero)){

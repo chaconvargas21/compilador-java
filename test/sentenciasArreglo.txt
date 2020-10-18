@@ -1,0 +1,19 @@
+publico estatico vacio principal(cadena []args){
+         
+        entero a[] = {1,2,3,4,5,};
+        
+        entero a[] = {1,2,3,4,5};
+        
+        entero a[] = {,};
+        
+        entero a[] = {};
+        
+
+        entero a[][]= nuevo entero [3][];
+           a[0] = nuevo entero [2];
+           a[1] = nuevo entero [3];
+           a[2] = nuevo entero [4];
+            
+        entero a[] = nuevo entero [3];
+        
+     }

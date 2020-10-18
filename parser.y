@@ -42,7 +42,10 @@ unidadCompilacion:
 
 bloque: 
       LLAVE_INI sentenciasBloque LLAVE_FIN 
-      | LLAVE_INI LLAVE_FIN;
+      | LLAVE_INI LLAVE_FIN
+      
+      | bloqueIncorrecto;
+      
 sentenciasBloque: 
       sentenciasBloque sentenciaBloque 
       | sentenciaBloque;
@@ -50,7 +53,9 @@ sentenciaBloque:
       sentenciaDeclaracionVariableLocal 
       | sentencia;
 sentenciaDeclaracionVariableLocal: 
-      declaracionVariableLocal PUNTO_COMA {printf("la declaracion de variable local es valida\n");};
+      declaracionVariableLocal PUNTO_COMA {printf("la declaracion de variable local es valida\n");}
+      
+      | sentenciaDeclaracionVariableLocalIncorrecto;
 sentencia:
 	sentenciaSinSeguimientoSubsentencia
 	| sentenciaSiLuego 
@@ -64,6 +69,7 @@ sentenciaNoCorto:
       | sentenciaParaNoCorto;
 sentenciaSinSeguimientoSubsentencia:
       bloque 
+      | sentenciaVacia 
       | sentenciaExpresion;
 
 /*DECLARACION DE VARIABLE*/
@@ -85,20 +91,30 @@ inicializadorVariable:
 
 /*SENTENCIA SI-SINO*/
 
-sentenciaSiLuego: 
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia si luego es valida\n");};
-sentenciaSiLuegoSino: 
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia {printf("la sentencia si luego sino es valida\n");};
+sentenciaSiLuego:
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia si luego es valida\n");}
+      
+      | sentenciaSiLuegoIncorrecto;
+sentenciaSiLuegoSino:
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia {printf("la sentencia si luego sino es valida\n");}
+      
+      | sentenciaSiLuegoSinoIncorrecto;
 sentenciaSiLuegoSinoNoCorto:
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto{printf("la sentencia si luego sino no corto es valida\n");};
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto{printf("la sentencia si luego sino no corto es valida\n");}
+      
+      | sentenciaSiLuegoSinoNoCortoIncorrecto;
 
 /*SENTENCIA MIENTRAS*/
 
 sentenciaMientras:
-	MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia mientras es valida\n");};
+	MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia mientras es valida\n");}
+      
+      | sentenciaMientrasIncorrecto;
 sentenciaMientrasNoCorto:
-      MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");};
+      MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");}
 
+      | sentenciaMientrasNoCortoIncorrecto;
+      
 /*SENTENCIA PARA*/
 
 sentenciaPara:
@@ -108,7 +124,7 @@ sentenciaPara:
       | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
       | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentencia 
       | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentencia 
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia;
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentencia {printf("la sentencia para es valida\n");};
 sentenciaParaNoCorto:
 	PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
       | PARA PARENTESIS_INI iniciarPara PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
@@ -116,17 +132,23 @@ sentenciaParaNoCorto:
       | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
       | PARA PARENTESIS_INI PUNTO_COMA expresion PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto 
       | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA actualizarPara PARENTESIS_FIN sentenciaNoCorto 
-      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto;
+      | PARA PARENTESIS_INI PUNTO_COMA PUNTO_COMA PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia para no corto es valida\n");};
 iniciarPara: listaExpresionesDeclaracion | declaracionVariableLocal;
 actualizarPara: listaExpresionesDeclaracion;
 listaExpresionesDeclaracion: 
       listaExpresionesDeclaracion COMA expresionDeclaracion 
       | expresionDeclaracion;
 
+/*SENTENCIA VACIA*/
+
+sentenciaVacia: PUNTO_COMA {printf("la sentencia vacia es valida\n");};
+
 /*SENTENCIA EXPRESION*/
 
 sentenciaExpresion: 
-	expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");};
+      expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");}
+      
+      | sentenciaExpresionIncorrecto;
 
 /*SENTENCIA DECLARACION */
 
@@ -266,10 +288,12 @@ primarioNoNuevoArreglo:
 /*INICIALIZADOR ARREGLOS*/
 
 inicializadorArreglo:
-	PARENTESIS_INI inicializadoresVariable COMA PARENTESIS_FIN 
-	| PARENTESIS_INI inicializadoresVariable PARENTESIS_FIN 
-	| PARENTESIS_INI COMA PARENTESIS_FIN 
-	| PARENTESIS_INI PARENTESIS_FIN;
+	LLAVE_INI inicializadoresVariable COMA LLAVE_FIN 
+	| LLAVE_INI inicializadoresVariable LLAVE_FIN 
+	| LLAVE_INI COMA LLAVE_FIN 
+	| LLAVE_INI LLAVE_FIN
+      
+      | inicializadorArregloIncorrecto;
 inicializadoresVariable:
 	inicializadoresVariable	 COMA inicializadorVariable
       | inicializadorVariable;
@@ -278,9 +302,9 @@ inicializadoresVariable:
 
 expresionCreacionArreglo:
 	NUEVO tipoPrimitivo expresionesDimension dimensiones 
-      | NUEVO tipoPrimitivo expresionesDimension 
-      | NUEVO expresionesDimension dimensiones
-      | NUEVO expresionesDimension;
+      | NUEVO tipoPrimitivo expresionesDimension
+      
+      | expresionCreacionArregloIncorrecto;
 expresionesDimension:
 	expresionesDimension expresionDimension
       | expresionDimension;
@@ -334,23 +358,24 @@ tipoArreglo:
 nombre: 
       IDENTIFICADOR;
 
-/*ERRORES SEMANTICOS*/
+/*ERRORES SINTACTICOS*/
 
 /*LLAVES FALTANTE*/
-bloque: 
+bloqueIncorrecto: 
       LLAVE_INI sentenciasBloque 
       | LLAVE_INI {printf("error: se alcanzó el final del archivo durante el análisis \n");};
 
 /*PUNTO COMA FALTANTE*/
 
-sentenciaDeclaracionVariableLocal: 
+sentenciaDeclaracionVariableLocalIncorrecto: 
       declaracionVariableLocal  {printf("error: ';' esperado\n");};
-sentenciaExpresion: 
+
+sentenciaExpresionIncorrecto: 
 	expresionDeclaracion  {printf("error: ';' esperado\n");};
 
 /*SENTENCIA SI-SINO INCORRECTAS*/
 
-sentenciaSiLuego: 
+sentenciaSiLuegoIncorrecto: 
       SI  expresion PARENTESIS_FIN sentencia 
       | SI PARENTESIS_INI expresion  sentencia 
       | SI  expresion  sentencia 
@@ -378,21 +403,23 @@ sentenciaSiLuego:
       
       {printf("error: la sentencia si luego es incorrecta\n");};
 
-sentenciaSiLuegoSino: 
+sentenciaSiLuegoSinoIncorrecto: 
    
       SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
       | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia
       | SI  expresion  sentenciaNoCorto SINO sentencia
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentencia
       | SI sentenciaNoCorto SINO sentencia
-
+      | sentenciaNoCorto SINO sentencia
+      
       | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentencia
       | SI  expresion PARENTESIS_FIN SINO sentencia 
       | SI PARENTESIS_INI expresion SINO sentencia  
       | SI  expresion SINO sentencia  
       | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentencia 
       | SI SINO sentencia
-      
+      | SINO sentencia
+
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
       | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
       | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia
@@ -404,13 +431,17 @@ sentenciaSiLuegoSino:
       | PARENTESIS_INI expresion SINO sentencia  
       | expresion SINO sentencia  
       | PARENTESIS_INI  PARENTESIS_FIN SINO sentencia
+      | SINO sentencia
 
 
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
+      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
       | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO 
       | SI  expresion  sentenciaNoCorto SINO 
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
       | SI sentenciaNoCorto SINO 
+      | sentenciaNoCorto SINO 
+
 
       | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO 
       | SI  expresion PARENTESIS_FIN SINO  
@@ -418,10 +449,11 @@ sentenciaSiLuegoSino:
       | SI  expresion SINO   
       | SI PARENTESIS_INI  PARENTESIS_FIN SINO  
       | SI SINO 
+      | SINO 
       
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
       | expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | PARENTESIS_INI expresion  sentenciaNoCorto SINO 
+      | PARENT    ESIS_INI expresion  sentenciaNoCorto SINO 
       | expresion  sentenciaNoCorto SINO 
       | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
 
@@ -431,20 +463,19 @@ sentenciaSiLuegoSino:
       | expresion SINO   
       | PARENTESIS_INI  PARENTESIS_FIN SINO 
 
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
+
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
       | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentencia
       | SI  expresion  sentenciaNoCorto  sentencia
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia
       | SI sentenciaNoCorto  sentencia
-
-      /*
+      
       | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentencia 
       | SI  expresion PARENTESIS_FIN  sentencia 
       | SI PARENTESIS_INI expresion  sentencia  
       | SI  expresion  sentencia  
       | SI PARENTESIS_INI  PARENTESIS_FIN  sentencia 
-      | SI SINO sentencia
-      */
+      | SI sentencia
       
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
       | expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
@@ -452,31 +483,33 @@ sentenciaSiLuegoSino:
       | expresion  sentenciaNoCorto  sentencia
       | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia
 
-      /*      
+          
       | PARENTESIS_INI expresion PARENTESIS_FIN  sentencia
       | expresion PARENTESIS_FIN  sentencia 
       | PARENTESIS_INI expresion  sentencia  
       | expresion  sentencia  
       | PARENTESIS_INI  PARENTESIS_FIN  sentencia
-      */
+      
 
       {printf("error: la sentencia si luego sino es incorrecta\n");};
 
-sentenciaSiLuegoSinoNoCorto:
+sentenciaSiLuegoSinoNoCortoIncorrecto:
 
       SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
       | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto
       | SI  expresion  sentenciaNoCorto SINO sentenciaNoCorto
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
       | SI sentenciaNoCorto SINO sentenciaNoCorto
-
+      | sentenciaNoCorto SINO sentenciaNoCorto
+      
       | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentenciaNoCorto
       | SI  expresion PARENTESIS_FIN SINO sentenciaNoCorto 
       | SI PARENTESIS_INI expresion SINO sentenciaNoCorto  
       | SI  expresion SINO sentenciaNoCorto  
       | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto 
       | SI SINO sentenciaNoCorto
-      
+      | SINO sentenciaNoCorto
+
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
       | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
       | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto
@@ -488,13 +521,17 @@ sentenciaSiLuegoSinoNoCorto:
       | PARENTESIS_INI expresion SINO sentenciaNoCorto  
       | expresion SINO sentenciaNoCorto  
       | PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto
+      | SINO sentenciaNoCorto
 
 
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
+      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
       | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO 
       | SI  expresion  sentenciaNoCorto SINO 
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
       | SI sentenciaNoCorto SINO 
+      | sentenciaNoCorto SINO 
+
 
       | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO 
       | SI  expresion PARENTESIS_FIN SINO  
@@ -502,10 +539,11 @@ sentenciaSiLuegoSinoNoCorto:
       | SI  expresion SINO   
       | SI PARENTESIS_INI  PARENTESIS_FIN SINO  
       | SI SINO 
+      | SINO 
       
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
       | expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | PARENTESIS_INI expresion  sentenciaNoCorto SINO 
+      | PARENT    ESIS_INI expresion  sentenciaNoCorto SINO 
       | expresion  sentenciaNoCorto SINO 
       | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
 
@@ -515,20 +553,19 @@ sentenciaSiLuegoSinoNoCorto:
       | expresion SINO   
       | PARENTESIS_INI  PARENTESIS_FIN SINO 
 
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
+
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
       | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentenciaNoCorto
       | SI  expresion  sentenciaNoCorto  sentenciaNoCorto
       | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
       | SI sentenciaNoCorto  sentenciaNoCorto
-
-      /*
+      
       | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto 
       | SI  expresion PARENTESIS_FIN  sentenciaNoCorto 
       | SI PARENTESIS_INI expresion  sentenciaNoCorto  
       | SI  expresion  sentenciaNoCorto  
       | SI PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto 
-      | SI SINO sentenciaNoCorto
-      */
+      | SI sentenciaNoCorto
       
       | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
       | expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
@@ -536,15 +573,112 @@ sentenciaSiLuegoSinoNoCorto:
       | expresion  sentenciaNoCorto  sentenciaNoCorto
       | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
 
-      /*      
+          
       | PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto
       | expresion PARENTESIS_FIN  sentenciaNoCorto 
       | PARENTESIS_INI expresion  sentenciaNoCorto  
       | expresion  sentenciaNoCorto  
       | PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto
-      */
-
+      
       {printf("error: la sentencia si luego sino no corta es incorrecta\n");};
+
+/*SENTENCIA MIENTRAS INCORRECTAS*/
+
+sentenciaMientrasIncorrecto:
+	MIENTRAS PARENTESIS_INI expresion sentencia
+      | MIENTRAS expresion PARENTESIS_FIN sentencia
+      | MIENTRAS expresion sentencia 
+      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentencia
+      | MIENTRAS sentencia 
+
+      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN 
+      | MIENTRAS  expresion PARENTESIS_FIN  
+      | MIENTRAS PARENTESIS_INI expresion   
+      | MIENTRAS  expresion   
+      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN 
+      | MIENTRAS 
+      
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentencia 
+      | expresion PARENTESIS_FIN sentencia 
+      | PARENTESIS_INI expresion  sentencia 
+      | expresion  sentencia 
+      | PARENTESIS_INI  PARENTESIS_FIN sentencia 
+
+      | PARENTESIS_INI expresion PARENTESIS_FIN 
+      | expresion PARENTESIS_FIN  
+      | PARENTESIS_INI expresion   
+      | expresion   
+      | PARENTESIS_INI  PARENTESIS_FIN {printf("error: la sentencia mientras es incorrecta\n");};
+
+sentenciaMientrasNoCortoIncorrecto:
+      MIENTRAS PARENTESIS_INI expresion sentenciaNoCorto
+      | MIENTRAS expresion PARENTESIS_FIN sentenciaNoCorto
+      | MIENTRAS expresion sentenciaNoCorto 
+      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentenciaNoCorto
+      | MIENTRAS sentenciaNoCorto 
+
+      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN 
+      | MIENTRAS  expresion PARENTESIS_FIN  
+      | MIENTRAS PARENTESIS_INI expresion   
+      | MIENTRAS  expresion   
+      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN 
+      | MIENTRAS 
+      
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto 
+      | expresion PARENTESIS_FIN sentenciaNoCorto 
+      | PARENTESIS_INI expresion  sentenciaNoCorto 
+      | expresion  sentenciaNoCorto 
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto 
+
+      | PARENTESIS_INI expresion PARENTESIS_FIN 
+      | expresion PARENTESIS_FIN  
+      | PARENTESIS_INI expresion   
+      | expresion   
+      | PARENTESIS_INI  PARENTESIS_FIN  {printf("error: la sentencia mientras no corto es incorrecta\n");};
+
+/*SENTENCIA DE ARREGLOS INCORRECTAS*/
+
+/*INICIALIZADOR ARREGLOS*/
+
+inicializadorArregloIncorrecto:
+
+      inicializadoresVariable COMA LLAVE_FIN
+      | LLAVE_INI inicializadoresVariable COMA 
+      | inicializadoresVariable COMA 
+
+      | inicializadoresVariable LLAVE_FIN
+      | LLAVE_INI inicializadoresVariable 
+      | inicializadoresVariable
+
+      | COMA LLAVE_FIN
+      | LLAVE_INI COMA
+      | COMA 
+      
+      |LLAVE_INI
+      |LLAVE_FIN
+      |/*VACIO*/ {printf("error: la sentencia inicializador de arreglo es incorrecta\n");};
+
+/*EXPRESIONES CREACION ARREGLO*/
+
+expresionCreacionArregloIncorrecto:
+
+      NUEVO expresionesDimension dimensiones 
+      | NUEVO expresionesDimension
+      | NUEVO dimensiones 
+      | NUEVO tipoPrimitivo  dimensiones 
+      | NUEVO tipoPrimitivo 
+      | NUEVO
+
+      | tipoPrimitivo expresionesDimension dimensiones 
+      | tipoPrimitivo expresionesDimension 
+      | tipoPrimitivo  dimensiones
+      | tipoPrimitivo
+
+      | expresionesDimension dimensiones
+      | expresionesDimension
+      | dimensiones
+      |/*VACIO*/ {printf("error: la sentencia creacion de arreglo es incorrecta\n");};
+
 /**/
 %%
 

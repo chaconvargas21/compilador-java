@@ -1,0 +1,4 @@
+publico estatico vacio principal(cadena []args){
+	entero a = 5 , b[] = nuevo entero[5] , c = a ;
+	booleano d = !( 5 == 2 * 3 - 1);
+}

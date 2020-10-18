@@ -1,4 +1,4 @@
-{
+publico estatico vacio principal(cadena []args){
     entero num=1;
     mientras (num<=50){
         num++;
