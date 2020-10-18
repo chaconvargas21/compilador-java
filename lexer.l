@@ -31,6 +31,8 @@ errorNumeroDobleConComa -?{digito}+\,{digito}{1,15}
 errorMasDeUnPuntoOComa -?{digito}+[\.|\,]{digito}*[\.|\,]
 errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
 error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
+tipo_dato "doble"|"flotante"|"entero"|"booleano"|"Cadena"|"corto"|"largo"|"byte"|"caracter"
+variable_valida [a-zA-Z\_][a-zA-Z0-9]*
 
 %%
 {entero}	     {estado = ENTERO_LITERAL;	    agregar_palabra(estado, yytext);    return ENTERO_LITERAL;}
