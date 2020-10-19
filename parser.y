@@ -11,7 +11,7 @@ int yyerror(char *s);
 /* Sección REGLAS */
 %token ENTERO_LITERAL FLOTANTE_LITERAL DOBLE_LITERAL CARACTER_LITERAL CADENA_LITERAL BOOLEANO_LITERAL NULO_LITERAL 
 
-%token ABSTRACTO AFIRMAR BOOLEANO INTERRUPCION BYTE CASO CAPTURA CARACTER CLASE CONSTANTE CONTINUAR DEFECTO HACER DOBLE SINO ENUMERACION EXPORTAR EXTIENDE FINAL FINALMENTE FLOTANTE PARA IR SI IMPLEMENTAR IMPORTAR ENTERO INTERFAZ LARGO MODULO NATIVO NUEVO PAQUETE PRIVADO PROTEGIDO PUBLICO REQUERIR RETORNAR CORTO ESTATICO STRICTFP SUPER INTERRUPTOR SINCRONIZADO ESTO LANZAR LANZA TRANSITORIO INTENTAR VARIABLE VACIO VOLATIL MIENTRAS PRINCIPAL ARGS
+%token ABSTRACTO AFIRMAR BOOLEANO INTERRUPCION BYTE CADENA CASO CAPTURA CARACTER CLASE CONSTANTE CONTINUAR DEFECTO HACER DOBLE SINO ENUMERACION EXPORTAR EXTIENDE FINAL FINALMENTE FLOTANTE PARA IR SI IMPLEMENTAR IMPORTAR ENTERO INTERFAZ LARGO MODULO NATIVO NUEVO PAQUETE PRIVADO PROTEGIDO PUBLICO REQUERIR RETORNAR CORTO ESTATICO STRICTFP SUPER INTERRUPTOR SINCRONIZADO ESTO LANZAR LANZA TRANSITORIO INTENTAR VARIABLE VACIO VOLATIL MIENTRAS PRINCIPAL ARGS
 
 %token OP_SUMA OP_RESTA OP_MULTIPLICACION OP_DIVISION OP_MODULO
 
@@ -36,42 +36,51 @@ int yyerror(char *s);
 
 unidadCompilacion: 
       PUBLICO ESTATICO VACIO PRINCIPAL PARENTESIS_INI CADENA CORCHETE_INI CORCHETE_FIN ARGS PARENTESIS_FIN
-      bloque {printf("la unidad de compilacion se ejecuto correctamente\n");};
+      bloque {printf("la unidad de compilacion se ejecuto correctamente\n");}
+      
+      | bloqueIncorrecto;
 
 /*BLOQUES Y SENTENCIAS*/
 
 bloque: 
       LLAVE_INI sentenciasBloque LLAVE_FIN 
-      | LLAVE_INI LLAVE_FIN
-      
-      | bloqueIncorrecto;
+      | LLAVE_INI LLAVE_FIN;
       
 sentenciasBloque: 
       sentenciasBloque sentenciaBloque 
       | sentenciaBloque;
-sentenciaBloque:  
-      sentenciaDeclaracionVariableLocal 
-      | sentencia;
-sentenciaDeclaracionVariableLocal: 
-      declaracionVariableLocal PUNTO_COMA {printf("la declaracion de variable local es valida\n");}
-      
+sentenciaBloque:
+      | sentenciaDeclaracionVariableLocal 
+      | sentencia
+
       | sentenciaDeclaracionVariableLocalIncorrecto;
+sentenciaDeclaracionVariableLocal: 
+      declaracionVariableLocal PUNTO_COMA {printf("la declaracion de variable local es valida\n");};
 sentencia:
 	sentenciaSinSeguimientoSubsentencia
 	| sentenciaSiLuego 
 	| sentenciaSiLuegoSino 
 	| sentenciaMientras
-      | sentenciaPara;
+      	| sentenciaPara
+	
+	| sentenciaSiLuegoIncorrecto
+	| sentenciaSiLuegoSinoIncorrecto
+	| sentenciaMientrasIncorrecto;
 sentenciaNoCorto:
 	sentenciaSinSeguimientoSubsentencia 
 	| sentenciaSiLuegoSinoNoCorto 
 	| sentenciaMientrasNoCorto
-      | sentenciaParaNoCorto;
+        | sentenciaParaNoCorto
+
+	| sentenciaSiLuegoSinoNoCortoIncorrecto
+	| sentenciaMientrasNoCortoIncorrecto;
 sentenciaSinSeguimientoSubsentencia:
       bloque 
       | sentenciaVacia 
-      | sentenciaExpresion;
+      | sentenciaExpresion
 
+      | sentenciaExpresionIncorrecto
+      | sentenciaVaciaIncorrecto;
 /*DECLARACION DE VARIABLE*/
 
 declaracionVariableLocal:
@@ -87,33 +96,25 @@ declaradorVariableId:
       | declaradorVariableId CORCHETE_INI CORCHETE_FIN;
 inicializadorVariable: 
       expresion 
-      | inicializadorArreglo;
+      | inicializadorArreglo
+
+      | inicializadorArregloIncorrecto;
 
 /*SENTENCIA SI-SINO*/
 
 sentenciaSiLuego:
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia si luego es valida\n");}
-      
-      | sentenciaSiLuegoIncorrecto;
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia si luego es valida\n");};
 sentenciaSiLuegoSino:
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia {printf("la sentencia si luego sino es valida\n");}
-      
-      | sentenciaSiLuegoSinoIncorrecto;
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia {printf("la sentencia si luego sino es valida\n");};
 sentenciaSiLuegoSinoNoCorto:
-      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto{printf("la sentencia si luego sino no corto es valida\n");}
-      
-      | sentenciaSiLuegoSinoNoCortoIncorrecto;
+      SI PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto{printf("la sentencia si luego sino no corto es valida\n");};
 
 /*SENTENCIA MIENTRAS*/
 
 sentenciaMientras:
-	MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia mientras es valida\n");}
-      
-      | sentenciaMientrasIncorrecto;
+	MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("la sentencia mientras es valida\n");};
 sentenciaMientrasNoCorto:
-      MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");}
-
-      | sentenciaMientrasNoCortoIncorrecto;
+      MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto {printf("la sentencia mientras no corto es valida\n");};
       
 /*SENTENCIA PARA*/
 
@@ -146,9 +147,7 @@ sentenciaVacia: PUNTO_COMA {printf("la sentencia vacia es valida\n");};
 /*SENTENCIA EXPRESION*/
 
 sentenciaExpresion: 
-      expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");}
-      
-      | sentenciaExpresionIncorrecto;
+      expresionDeclaracion PUNTO_COMA {printf("la sentencia de expresion es valida\n");};
 
 /*SENTENCIA DECLARACION */
 
@@ -277,7 +276,9 @@ expresionPostDecremento:
 
 primario: 
       primarioNoNuevoArreglo 
-      | expresionCreacionArreglo; 
+      | expresionCreacionArreglo
+      
+      | expresionCreacionArregloIncorrecto; 
 primarioNoNuevoArreglo:
 	literal 
 	| ESTO 
@@ -291,9 +292,7 @@ inicializadorArreglo:
 	LLAVE_INI inicializadoresVariable COMA LLAVE_FIN 
 	| LLAVE_INI inicializadoresVariable LLAVE_FIN 
 	| LLAVE_INI COMA LLAVE_FIN 
-	| LLAVE_INI LLAVE_FIN
-      
-      | inicializadorArregloIncorrecto;
+	| LLAVE_INI LLAVE_FIN;
 inicializadoresVariable:
 	inicializadoresVariable	 COMA inicializadorVariable
       | inicializadorVariable;
@@ -302,9 +301,7 @@ inicializadoresVariable:
 
 expresionCreacionArreglo:
 	NUEVO tipoPrimitivo expresionesDimension dimensiones 
-      | NUEVO tipoPrimitivo expresionesDimension
-      
-      | expresionCreacionArregloIncorrecto;
+      | NUEVO tipoPrimitivo expresionesDimension;
 expresionesDimension:
 	expresionesDimension expresionDimension
       | expresionDimension;
@@ -362,8 +359,8 @@ nombre:
 
 /*LLAVES FALTANTE*/
 bloqueIncorrecto: 
-      LLAVE_INI sentenciasBloque 
-      | LLAVE_INI {printf("error: se alcanzó el final del archivo durante el análisis \n");};
+      LLAVE_INI sentenciasBloque  {printf("error: se alcanzó el final del archivo durante el análisis \n");} 
+      | LLAVE_INI  {printf("error: se alcanzó el final del archivo durante el análisis \n");};
 
 /*PUNTO COMA FALTANTE*/
 
@@ -371,269 +368,266 @@ sentenciaDeclaracionVariableLocalIncorrecto:
       declaracionVariableLocal  {printf("error: ';' esperado\n");};
 
 sentenciaExpresionIncorrecto: 
-	expresionDeclaracion  {printf("error: ';' esperado\n");};
+	expresionDeclaracion   {printf("error: ';' esperado\n");};
 
+sentenciaVaciaIncorrecto: 
+	/*VACIO*/  	       {printf("error: ';' esperado\n");}; 
 /*SENTENCIA SI-SINO INCORRECTAS*/
 
 sentenciaSiLuegoIncorrecto: 
-      SI  expresion PARENTESIS_FIN sentencia 
-      | SI PARENTESIS_INI expresion  sentencia 
-      | SI  expresion  sentencia 
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentencia 
-      | SI sentencia
+      SI  expresion PARENTESIS_FIN sentencia {printf("error: la sentencia si luego es incorrecta\n");} 
+      | SI PARENTESIS_INI expresion  sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | SI  expresion  sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | SI sentencia {printf("error: la sentencia si luego es incorrecta\n");}
 
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN 
-      | SI  expresion PARENTESIS_FIN  
-      | SI PARENTESIS_INI expresion   
-      | SI  expresion   
-      | SI PARENTESIS_INI  PARENTESIS_FIN 
-      | SI 
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN {printf("error: la sentencia si luego es incorrecta\n");} 
+      | SI  expresion PARENTESIS_FIN   {printf("error: la sentencia si luego es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  {printf("error: la sentencia si luego es incorrecta\n");}  
+      | SI  expresion  {printf("error: la sentencia si luego es incorrecta\n");}  
+      | SI PARENTESIS_INI  PARENTESIS_FIN  {printf("error: la sentencia si luego es incorrecta\n");}
+      | SI  {printf("error: la sentencia si luego es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentencia 
-      | expresion PARENTESIS_FIN sentencia 
-      | PARENTESIS_INI expresion  sentencia 
-      | expresion  sentencia 
-      | PARENTESIS_INI  PARENTESIS_FIN sentencia 
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | expresion  sentencia  {printf("error: la sentencia si luego es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentencia {printf("error: la sentencia si luego es incorrecta\n");} 
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN 
-      | expresion PARENTESIS_FIN  
-      | PARENTESIS_INI expresion   
-      | expresion   
-      | PARENTESIS_INI  PARENTESIS_FIN 
-      
-      {printf("error: la sentencia si luego es incorrecta\n");};
+      | PARENTESIS_INI expresion PARENTESIS_FIN  {printf("error: la sentencia si luego es incorrecta\n");}
+      | expresion PARENTESIS_FIN  {printf("error: la sentencia si luego es incorrecta\n");} 
+      | PARENTESIS_INI expresion {printf("error: la sentencia si luego es incorrecta\n");}   
+      | expresion {printf("error: la sentencia si luego es incorrecta\n");}   
+      | PARENTESIS_INI  PARENTESIS_FIN {printf("error: la sentencia si luego es incorrecta\n");};
 
 sentenciaSiLuegoSinoIncorrecto: 
    
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia
-      | SI  expresion  sentenciaNoCorto SINO sentencia
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentencia
-      | SI sentenciaNoCorto SINO sentencia
-      | sentenciaNoCorto SINO sentencia
+      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
       
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentencia
-      | SI  expresion PARENTESIS_FIN SINO sentencia 
-      | SI PARENTESIS_INI expresion SINO sentencia  
-      | SI  expresion SINO sentencia  
-      | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentencia 
-      | SI SINO sentencia
-      | SINO sentencia
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN SINO sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI expresion SINO sentencia  {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}  
+      | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
-      | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia
-      | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia
-      | expresion  sentenciaNoCorto SINO sentencia
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentencia
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion  sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN SINO sentencia
-      | expresion PARENTESIS_FIN SINO sentencia 
-      | PARENTESIS_INI expresion SINO sentencia  
-      | expresion SINO sentencia  
-      | PARENTESIS_INI  PARENTESIS_FIN SINO sentencia
-      | SINO sentencia
-
-
-      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO 
-      | SI  expresion  sentenciaNoCorto SINO 
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI sentenciaNoCorto SINO 
-      | sentenciaNoCorto SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN SINO sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI expresion SINO sentencia  {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}  
+      | PARENTESIS_INI  PARENTESIS_FIN SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SINO sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
 
 
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO 
-      | SI  expresion PARENTESIS_FIN SINO  
-      | SI PARENTESIS_INI expresion SINO   
-      | SI  expresion SINO   
-      | SI PARENTESIS_INI  PARENTESIS_FIN SINO  
-      | SI SINO 
-      | SINO 
+      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO{printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+
+
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI PARENTESIS_INI expresion SINO {printf("error: la sentencia si luego sino es incorrecta\n");}  
+      | SI  expresion SINO  {printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI PARENTESIS_INI  PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | PARENT    ESIS_INI expresion  sentenciaNoCorto SINO 
-      | expresion  sentenciaNoCorto SINO 
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion  sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN SINO 
-      | expresion PARENTESIS_FIN SINO  
-      | PARENTESIS_INI expresion SINO   
-      | expresion SINO   
-      | PARENTESIS_INI  PARENTESIS_FIN SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | PARENTESIS_INI expresion SINO   {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion SINO   {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino es incorrecta\n");}
 
 
-      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentencia
-      | SI  expresion  sentenciaNoCorto  sentencia
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia
-      | SI sentenciaNoCorto  sentencia
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
       
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentencia 
-      | SI  expresion PARENTESIS_FIN  sentencia 
-      | SI PARENTESIS_INI expresion  sentencia  
-      | SI  expresion  sentencia  
-      | SI PARENTESIS_INI  PARENTESIS_FIN  sentencia 
-      | SI sentencia
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN  sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}  
+      | SI  expresion  sentencia {printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI PARENTESIS_INI  PARENTESIS_FIN  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");} 
+      | SI sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
-      | expresion PARENTESIS_FIN sentenciaNoCorto  sentencia
-      | PARENTESIS_INI expresion  sentenciaNoCorto  sentencia
-      | expresion  sentenciaNoCorto  sentencia
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion  sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
 
           
-      | PARENTESIS_INI expresion PARENTESIS_FIN  sentencia
-      | expresion PARENTESIS_FIN  sentencia 
-      | PARENTESIS_INI expresion  sentencia  
-      | expresion  sentencia  
-      | PARENTESIS_INI  PARENTESIS_FIN  sentencia
-      
-
-      {printf("error: la sentencia si luego sino es incorrecta\n");};
+      | PARENTESIS_INI expresion PARENTESIS_FIN  sentencia{printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion PARENTESIS_FIN  sentencia {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentencia  {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | expresion  sentencia  {printf("error: la sentencia si luego sino es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN  sentencia {printf("error: la sentencia si luego sino es incorrecta\n");};
 
 sentenciaSiLuegoSinoNoCortoIncorrecto:
 
-      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto
-      | SI  expresion  sentenciaNoCorto SINO sentenciaNoCorto
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
-      | SI sentenciaNoCorto SINO sentenciaNoCorto
-      | sentenciaNoCorto SINO sentenciaNoCorto
+      SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
       
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentenciaNoCorto
-      | SI  expresion PARENTESIS_FIN SINO sentenciaNoCorto 
-      | SI PARENTESIS_INI expresion SINO sentenciaNoCorto  
-      | SI  expresion SINO sentenciaNoCorto  
-      | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto 
-      | SI SINO sentenciaNoCorto
-      | SINO sentenciaNoCorto
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | SI  expresion SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | SI PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
-      | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
-      | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto
-      | expresion  sentenciaNoCorto SINO sentenciaNoCorto
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion  sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN SINO sentenciaNoCorto
-      | expresion PARENTESIS_FIN SINO sentenciaNoCorto 
-      | PARENTESIS_INI expresion SINO sentenciaNoCorto  
-      | expresion SINO sentenciaNoCorto  
-      | PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto
-      | SINO sentenciaNoCorto
-
-
-      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO 
-      | SI  expresion  sentenciaNoCorto SINO 
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
-      | SI sentenciaNoCorto SINO 
-      | sentenciaNoCorto SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI expresion SINO sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | expresion SINO sentenciaNoCorto   {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SINO sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
 
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO 
-      | SI  expresion PARENTESIS_FIN SINO  
-      | SI PARENTESIS_INI expresion SINO   
-      | SI  expresion SINO   
-      | SI PARENTESIS_INI  PARENTESIS_FIN SINO  
-      | SI SINO 
-      | SINO 
+      | SI  PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+
+
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion PARENTESIS_FIN SINO   {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}  
+      | SI  expresion SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}  
+      | SI PARENTESIS_INI  PARENTESIS_FIN SINO {printf("error: la sentencia si luego sino no corta es incorrecta\n");}  
+      | SI SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | expresion PARENTESIS_FIN sentenciaNoCorto SINO 
-      | PARENT    ESIS_INI expresion  sentenciaNoCorto SINO 
-      | expresion  sentenciaNoCorto SINO 
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto SINO {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | PARENTESIS_INI expresion  sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion  sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN SINO 
-      | expresion PARENTESIS_FIN SINO  
-      | PARENTESIS_INI expresion SINO   
-      | expresion SINO   
-      | PARENTESIS_INI  PARENTESIS_FIN SINO 
+      | PARENTESIS_INI expresion PARENTESIS_FIN SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | PARENTESIS_INI expresion SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}  
+      | expresion SINO {printf("error: la sentencia si luego sino no corta es incorrecta\n");}   
+      | PARENTESIS_INI  PARENTESIS_FIN SINO  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
 
-      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentenciaNoCorto
-      | SI  expresion  sentenciaNoCorto  sentenciaNoCorto
-      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
-      | SI sentenciaNoCorto  sentenciaNoCorto
+      | SI  expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
       
-      | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto 
-      | SI  expresion PARENTESIS_FIN  sentenciaNoCorto 
-      | SI PARENTESIS_INI expresion  sentenciaNoCorto  
-      | SI  expresion  sentenciaNoCorto  
-      | SI PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto 
-      | SI sentenciaNoCorto
+      | SI PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | SI  expresion PARENTESIS_FIN  sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI PARENTESIS_INI expresion  sentenciaNoCorto   {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI  expresion  sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");} 
+      | SI PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | SI sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
-      | expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
-      | PARENTESIS_INI expresion  sentenciaNoCorto  sentenciaNoCorto
-      | expresion  sentenciaNoCorto  sentenciaNoCorto
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion  sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
 
           
-      | PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto
-      | expresion PARENTESIS_FIN  sentenciaNoCorto 
-      | PARENTESIS_INI expresion  sentenciaNoCorto  
-      | expresion  sentenciaNoCorto  
-      | PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto
+      | PARENTESIS_INI expresion PARENTESIS_FIN  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion PARENTESIS_FIN  sentenciaNoCorto  {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto   {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | expresion  sentenciaNoCorto   {printf("error: la sentencia si luego sino no corta es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN  sentenciaNoCorto {printf("error: la sentencia si luego sino no corta es incorrecta\n");};
       
-      {printf("error: la sentencia si luego sino no corta es incorrecta\n");};
+      
 
 /*SENTENCIA MIENTRAS INCORRECTAS*/
 
 sentenciaMientrasIncorrecto:
-	MIENTRAS PARENTESIS_INI expresion sentencia
-      | MIENTRAS expresion PARENTESIS_FIN sentencia
-      | MIENTRAS expresion sentencia 
-      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentencia
-      | MIENTRAS sentencia 
+	MIENTRAS PARENTESIS_INI expresion sentencia {printf("error : la sentencia mientras es incorrecta\n");}
+      | MIENTRAS expresion PARENTESIS_FIN sentencia {printf("error : la sentencia mientras es incorrecta\n");}
+      | MIENTRAS expresion sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
+      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentencia {printf("error : la sentencia mientras es incorrecta\n");}
+      | MIENTRAS sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
 
-      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN 
-      | MIENTRAS  expresion PARENTESIS_FIN  
-      | MIENTRAS PARENTESIS_INI expresion   
-      | MIENTRAS  expresion   
-      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN 
-      | MIENTRAS 
+      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN {printf("error : la sentencia mientras es incorrecta\n");} 
+      | MIENTRAS  expresion PARENTESIS_FIN {printf("error : la sentencia mientras es incorrecta\n");}  
+      | MIENTRAS PARENTESIS_INI expresion {printf("error : la sentencia mientras es incorrecta\n");}   
+      | MIENTRAS  expresion {printf("error : la sentencia mientras es incorrecta\n");}   
+      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN {printf("error : la sentencia mientras es incorrecta\n");} 
+      | MIENTRAS {printf("error : la sentencia mientras es incorrecta\n");} 
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentencia 
-      | expresion PARENTESIS_FIN sentencia 
-      | PARENTESIS_INI expresion  sentencia 
-      | expresion  sentencia 
-      | PARENTESIS_INI  PARENTESIS_FIN sentencia 
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
+      | expresion PARENTESIS_FIN sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
+      | PARENTESIS_INI expresion  sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
+      | expresion  sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
+      | PARENTESIS_INI  PARENTESIS_FIN sentencia {printf("error : la sentencia mientras es incorrecta\n");} 
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN 
-      | expresion PARENTESIS_FIN  
-      | PARENTESIS_INI expresion   
-      | expresion   
-      | PARENTESIS_INI  PARENTESIS_FIN {printf("error: la sentencia mientras es incorrecta\n");};
+      | PARENTESIS_INI expresion PARENTESIS_FIN {printf("error : la sentencia mientras es incorrecta\n");} 
+      | expresion PARENTESIS_FIN {printf("error : la sentencia mientras es incorrecta\n");}  
+      | PARENTESIS_INI expresion {printf("error : la sentencia mientras es incorrecta\n");}   
+      | expresion {printf("error : la sentencia mientras es incorrecta\n");}   
+      | PARENTESIS_INI  PARENTESIS_FIN {printf("error 21: la sentencia mientras es incorrecta\n");};
 
 sentenciaMientrasNoCortoIncorrecto:
-      MIENTRAS PARENTESIS_INI expresion sentenciaNoCorto
-      | MIENTRAS expresion PARENTESIS_FIN sentenciaNoCorto
-      | MIENTRAS expresion sentenciaNoCorto 
-      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentenciaNoCorto
-      | MIENTRAS sentenciaNoCorto 
+      MIENTRAS PARENTESIS_INI expresion sentenciaNoCorto  {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | MIENTRAS expresion PARENTESIS_FIN sentenciaNoCorto  {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | MIENTRAS expresion sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | MIENTRAS PARENTESIS_INI PARENTESIS_FIN sentenciaNoCorto  {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | MIENTRAS sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
 
-      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN 
-      | MIENTRAS  expresion PARENTESIS_FIN  
-      | MIENTRAS PARENTESIS_INI expresion   
-      | MIENTRAS  expresion   
-      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN 
-      | MIENTRAS 
+      | MIENTRAS PARENTESIS_INI expresion PARENTESIS_FIN   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | MIENTRAS  expresion PARENTESIS_FIN   {printf("error: la sentencia mientras no corto es incorrecta\n");} 
+      | MIENTRAS PARENTESIS_INI expresion   {printf("error: la sentencia mientras no corto es incorrecta\n");}  
+      | MIENTRAS  expresion   {printf("error: la sentencia mientras no corto es incorrecta\n");}  
+      | MIENTRAS PARENTESIS_INI  PARENTESIS_FIN  {printf("error: la sentencia mientras no corto es incorrecta\n");} 
+      | MIENTRAS   {printf("error: la sentencia mientras no corto es incorrecta\n");}
       
-      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto 
-      | expresion PARENTESIS_FIN sentenciaNoCorto 
-      | PARENTESIS_INI expresion  sentenciaNoCorto 
-      | expresion  sentenciaNoCorto 
-      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto 
+      | PARENTESIS_INI expresion PARENTESIS_FIN sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | expresion PARENTESIS_FIN sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | PARENTESIS_INI expresion  sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | expresion  sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | PARENTESIS_INI  PARENTESIS_FIN sentenciaNoCorto   {printf("error: la sentencia mientras no corto es incorrecta\n");}
 
-      | PARENTESIS_INI expresion PARENTESIS_FIN 
-      | expresion PARENTESIS_FIN  
-      | PARENTESIS_INI expresion   
-      | expresion   
+      | PARENTESIS_INI expresion PARENTESIS_FIN   {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | expresion PARENTESIS_FIN    {printf("error: la sentencia mientras no corto es incorrecta\n");}
+      | PARENTESIS_INI expresion   {printf("error: la sentencia mientras no corto es incorrecta\n");}  
+      | expresion    {printf("error: la sentencia mientras no corto es incorrecta\n");}   
       | PARENTESIS_INI  PARENTESIS_FIN  {printf("error: la sentencia mientras no corto es incorrecta\n");};
 
 /*SENTENCIA DE ARREGLOS INCORRECTAS*/
@@ -642,41 +636,41 @@ sentenciaMientrasNoCortoIncorrecto:
 
 inicializadorArregloIncorrecto:
 
-      inicializadoresVariable COMA LLAVE_FIN
-      | LLAVE_INI inicializadoresVariable COMA 
-      | inicializadoresVariable COMA 
+      inicializadoresVariable COMA LLAVE_FIN {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | LLAVE_INI inicializadoresVariable COMA  {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | inicializadoresVariable COMA  {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
 
-      | inicializadoresVariable LLAVE_FIN
-      | LLAVE_INI inicializadoresVariable 
-      | inicializadoresVariable
+      | inicializadoresVariable LLAVE_FIN {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | LLAVE_INI inicializadoresVariable  {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | inicializadoresVariable {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
 
-      | COMA LLAVE_FIN
-      | LLAVE_INI COMA
-      | COMA 
+      | COMA LLAVE_FIN {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | LLAVE_INI COMA {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      | COMA  {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
       
-      |LLAVE_INI
-      |LLAVE_FIN
+      |LLAVE_INI {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
+      |LLAVE_FIN {printf("error: la sentencia inicializador de arreglo es incorrecta\n");}
       |/*VACIO*/ {printf("error: la sentencia inicializador de arreglo es incorrecta\n");};
 
 /*EXPRESIONES CREACION ARREGLO*/
 
 expresionCreacionArregloIncorrecto:
 
-      NUEVO expresionesDimension dimensiones 
-      | NUEVO expresionesDimension
-      | NUEVO dimensiones 
-      | NUEVO tipoPrimitivo  dimensiones 
-      | NUEVO tipoPrimitivo 
-      | NUEVO
+      NUEVO expresionesDimension dimensiones {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | NUEVO expresionesDimension {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | NUEVO dimensiones  {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | NUEVO tipoPrimitivo  dimensiones  {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | NUEVO tipoPrimitivo {printf("error: la sentencia creacion de arreglo es incorrecta\n");} 
+      | NUEVO {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
 
-      | tipoPrimitivo expresionesDimension dimensiones 
-      | tipoPrimitivo expresionesDimension 
-      | tipoPrimitivo  dimensiones
-      | tipoPrimitivo
+      | tipoPrimitivo expresionesDimension dimensiones {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | tipoPrimitivo expresionesDimension {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | tipoPrimitivo  dimensiones {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | tipoPrimitivo {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
 
-      | expresionesDimension dimensiones
-      | expresionesDimension
-      | dimensiones
+      | expresionesDimension dimensiones {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | expresionesDimension {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
+      | dimensiones {printf("error: la sentencia creacion de arreglo es incorrecta\n");}
       |/*VACIO*/ {printf("error: la sentencia creacion de arreglo es incorrecta\n");};
 
 /**/

@@ -49,6 +49,7 @@ variable_valida [a-zA-Z\_][a-zA-Z0-9]*
 "booleano"     {estado = BOOLEANO;	    agregar_palabra(estado, yytext);    return BOOLEANO;}
 "interrupcion" {estado = INTERRUPCION;	agregar_palabra(estado, yytext);    return INTERRUPCION;}
 "byte"         {estado = BYTE;	        agregar_palabra(estado, yytext);    return BYTE;}
+"cadena"         {estado = CADENA;	        agregar_palabra(estado, yytext);    return CADENA;}
 "caso"         {estado = CASO;	        agregar_palabra(estado, yytext);    return CASO;}
 "captura"      {estado = CAPTURA;	    agregar_palabra(estado, yytext);    return CAPTURA;}
 "caracter"     {estado = CARACTER;	    agregar_palabra(estado, yytext);    return CARACTER;}
