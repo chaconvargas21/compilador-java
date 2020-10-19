@@ -1,0 +1,48 @@
+publico estatico vacio principal(cadena []args){ 
+        
+        mientras(verdadero
+            ;
+        mientras(verdadero
+            ;
+        mientrasverdadero)
+            ;
+        mientrasverdadero
+            ;
+        mientras()
+            ;
+        mientras 
+            ;
+        
+        mientras (verdadero)
+        
+        mientras (verdadero
+        
+        mientras verdadero)
+        
+        mientras verdadero
+        
+        mientras ()
+        
+        mientras 
+        
+        (verdadero)
+            ;
+        (verdadero
+            ;
+        verdadero)
+            ;
+        verdadero
+            ;
+        ()
+            ;
+            
+        (verdadero)
+        
+        (verdadero
+        
+        verdadero)
+        
+        verdadero
+        
+        ()
+     }

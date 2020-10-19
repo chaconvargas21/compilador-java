@@ -1,0 +1,329 @@
+publico estatico vacio principal(cadena []args){
+        
+        si (verdadero
+            ;
+        si (verdadero
+            ;
+        si verdadero)
+            ;
+        si verdadero
+            ;
+        si ()
+            ;
+        si 
+            ;
+        
+        si (verdadero)
+        
+        si (verdadero
+        
+        si verdadero)
+        
+        si verdadero
+        
+        si ()
+        
+        si 
+        
+        (verdadero)
+            ;
+        (verdadero
+            ;
+        verdadero)
+            ;
+        verdadero
+            ;
+        ()
+            ;
+            
+        (verdadero)
+        
+        (verdadero
+        
+        verdadero)
+        
+        verdadero
+        
+        ()
+        
+
+        si (verdadero
+            ;
+        sino
+            ;
+            
+        si verdadero)
+            ;
+        sino
+            ;
+            
+        si verdadero
+            ;
+        sino
+            ;
+            
+        si ()
+            ;
+        sino
+            ;
+            
+        si 
+            ;
+        sino
+            ;
+        
+            ;
+        sino
+            ;    
+            
+            
+        si (verdadero)
+        sino
+            ;
+            
+        si (verdadero
+        sino
+            ;
+            
+        si verdadero)
+        sino
+            ;
+            
+        si verdadero
+        sino
+            ;
+            
+        si ()
+        sino
+            ;
+            
+        si 
+        sino
+            ;
+        
+        sino
+            ;
+
+            
+        (verdadero)
+            ;
+        sino
+            ;
+        
+        (verdadero
+            ;
+        sino
+            ;
+            
+        verdadero)
+            ;
+        sino
+            ;
+            
+        verdadero
+            ;
+        sino
+            ;
+            
+        ()
+            ;
+        sino
+            ;
+        
+            
+        (verdadero)
+        sino
+            ;
+            
+        (verdadero
+        sino
+            ;
+            
+        verdadero)
+        sino
+            ;
+            
+        verdadero
+        sino
+            ;
+            
+        ()
+        sino
+            ;
+        
+
+        si (verdadero)
+            ;
+        sino
+        
+        si (verdadero
+            ;
+        sino
+            
+        si verdadero)
+            ;
+        sino
+
+        si verdadero
+            ;
+        sino
+
+        si ()
+            ;
+        sino
+
+        si 
+            ;
+        sino
+
+            ;
+        sino
+
+            
+        si (verdadero)
+        sino
+
+        si (verdadero
+        sino
+
+        si verdadero)
+        sino
+
+        si verdadero
+        sino
+
+        si ()
+        sino
+
+        si 
+        sino
+
+        sino
+
+            
+        (verdadero)
+            ;
+        sino
+
+        (verdadero
+            ;
+        sino
+
+        verdadero)
+            ;
+        sino
+
+        verdadero
+            ;
+        sino
+
+        ()
+            ;
+        sino
+
+            
+        (verdadero)
+        sino
+
+        (verdadero
+        sino
+
+        verdadero)
+        sino
+
+        verdadero
+        sino
+
+        ()
+        sino
+
+       
+        si (verdadero
+            ;
+        
+            ;
+            
+        si verdadero)
+            ;
+        
+            ;
+            
+        si verdadero
+            ;
+        
+            ;
+            
+        si ()
+            ;
+        
+            ;
+            
+        si 
+            ;
+        
+            ;
+        
+            
+        si (verdadero
+            ;
+            
+        si verdadero)
+            ;
+            
+        si verdadero
+            ;
+            
+        si ()
+            ;
+            
+        si 
+            ;
+        
+
+        (verdadero)
+            ;
+        
+            ;
+        
+        (verdadero
+            ;
+        
+            ;
+            
+        verdadero)
+            ;
+        
+            ;
+            
+        verdadero
+            ;
+        
+            ;
+            
+        ()
+            ;
+        
+            ;
+        
+            
+        (verdadero)
+        
+            ;
+            
+        (verdadero
+        
+            ;
+            
+        verdadero)
+        
+            ;
+            
+        verdadero
+        
+            ;
+            
+        ()
+        
+            ; 
+        
+     }

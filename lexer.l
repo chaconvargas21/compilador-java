@@ -7,6 +7,7 @@
 int estado;
 int agregar_palabra(int tipo, char *palabra);
 int buscar_palabra(char *palabra);
+int numLineas = 1;
 %}
 identificador [a-zA-Z\_][a-zA-Z0-9\_]*
 
@@ -31,6 +32,8 @@ errorNumeroDobleConComa -?{digito}+\,{digito}{1,15}
 errorMasDeUnPuntoOComa -?{digito}+[\.|\,]{digito}*[\.|\,]
 errorIdentificador [0-9][a-zA-Z_@#]|[@#][a-zA-Z_@#0-9]|[a-zA-Z_]+[@#]
 error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
+tipo_dato "doble"|"flotante"|"entero"|"booleano"|"Cadena"|"corto"|"largo"|"byte"|"caracter"
+variable_valida [a-zA-Z\_][a-zA-Z0-9]*
 
 %%
 {entero}	     {estado = ENTERO_LITERAL;	    agregar_palabra(estado, yytext);    return ENTERO_LITERAL;}
@@ -46,6 +49,7 @@ error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
 "booleano"     {estado = BOOLEANO;	    agregar_palabra(estado, yytext);    return BOOLEANO;}
 "interrupcion" {estado = INTERRUPCION;	agregar_palabra(estado, yytext);    return INTERRUPCION;}
 "byte"         {estado = BYTE;	        agregar_palabra(estado, yytext);    return BYTE;}
+"cadena"         {estado = CADENA;	        agregar_palabra(estado, yytext);    return CADENA;}
 "caso"         {estado = CASO;	        agregar_palabra(estado, yytext);    return CASO;}
 "captura"      {estado = CAPTURA;	    agregar_palabra(estado, yytext);    return CAPTURA;}
 "caracter"     {estado = CARACTER;	    agregar_palabra(estado, yytext);    return CARACTER;}
@@ -154,18 +158,18 @@ error_declaracion {tipo_dato}[ ]+{variable_valida}[ ]+{variable_valida}
 
 {funcion_primitiva}	 {estado = FUNC_PRIMITIVA;	agregar_palabra(estado, yytext);    return FUNC_PRIMITIVA;}
 
-{error_declaracion}         { printf("Error en la linea %i, columna %i, declaracion de varible incorrecta: %s\n", numLineas, numCaracteres, yytext); }
-{enteroEmpiezaCero}	        { printf("Error en la linea %i, columna %i, numero  entero empieza con 0 y no es 0: %s\n", numLineas, numCaracteres, yytext); }
-{errorNumeroFlotanteConComa}	 { printf("Error en la linea %i, columna %i, flotante con coma : %s\n", numLineas,numCaracteres,yytext); }
-{errorNumeroDobleConComa}   { printf("Error en la linea %i, columna %i, doble con coma : %s\n", numLineas,numCaracteres,yytext); }
-{errorMasDeUnPuntoOComa}    { printf("Error en la linea %i, columna %i, numero com mas de una coma o punto : %s\n", numLineas, numCaracteres,yytext); }
-{flotanteEmpiezaCero}	    { printf("Error en la linea %i, columna %i, numero flotante empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
-{dobleEmpiezaCero}	        { printf("Error en la linea %i, columna %i, numero doble empieza con 0 y no es 0. : %s\n", numLineas,numCaracteres,yytext); }
-{errorIdentificador}	    { printf("Error en la linea %i, columna %i, la escritura numero o variable no es valido : %s\n", numLineas,numCaracteres,yytext); }
+{error_declaracion}         { printf("Error en la linea %i, declaracion de varible incorrecta: %s\n", numLineas, yytext); }
+{enteroEmpiezaCero}	        { printf("Error en la linea %i,  numero  entero empieza con 0 y no es 0: %s\n", numLineas, yytext); }
+{errorNumeroFlotanteConComa}	 { printf("Error en la linea %i,  flotante con coma : %s\n", numLineas, yytext); }
+{errorNumeroDobleConComa}   { printf("Error en la linea %i,  doble con coma : %s\n", numLineas, yytext); }
+{errorMasDeUnPuntoOComa}    { printf("Error en la linea %i,  numero com mas de una coma o punto : %s\n", numLineas,  yytext); }
+{flotanteEmpiezaCero}	    { printf("Error en la linea %i,  numero flotante empieza con 0 y no es 0. : %s\n", numLineas, yytext); }
+{dobleEmpiezaCero}	        { printf("Error en la linea %i,  numero doble empieza con 0 y no es 0. : %s\n", numLineas, yytext); }
+{errorIdentificador}	    { printf("Error en la linea %i,  la escritura numero o variable no es valido : %s\n", numLineas, yytext); }
 
 {identificador}	     {estado = IDENTIFICADOR;	agregar_palabra(estado, yytext);    return IDENTIFICADOR;}
 
-\n
+\n { numLineas++; }
 .           /*ignorar cualquier otro símbolo*/
 %%
 

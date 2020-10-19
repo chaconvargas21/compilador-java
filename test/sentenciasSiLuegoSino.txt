@@ -1,0 +1,19 @@
+publico estatico vacio principal(cadena []args){
+        booleano a = verdadero;
+        booleano b = verdadero;
+        booleano c = falso;
+        
+        si (a){
+            si (b){
+                a= falso;
+            }
+        }
+        sino {
+            si (c){
+                c= falso;
+            }
+            si {
+		;
+            }
+        }
+     }
