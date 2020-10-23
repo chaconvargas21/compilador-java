@@ -35,7 +35,7 @@ int yyerror(char *s);
 %%
 
 unidadCompilacion: 
-     declaracionClase; 
+     declaracionClase {printf("la unidad de compilacion se ejecuto correctamente\n");}; 
 
 /*CLASE*/
 declaracionClase:
@@ -54,7 +54,7 @@ sentenciasBloque:
       sentenciasBloque sentenciaBloque 
       | sentenciaBloque;
 sentenciaBloque:
-       sentenciaDeclaracionVariableLocal
+       sentenciaDeclaracionVariableLocal {printf("la declaracion de variable local es valida\n");}
       | sentencia
 
       | sentenciaDeclaracionVariableLocalIncorrecto {printf("error: ';' esperado\n");};
@@ -62,10 +62,10 @@ sentenciaDeclaracionVariableLocal:
       declaracionVariableLocal PUNTO_COMA;
 sentencia:
 	sentenciaSinSeguimientoSubsentencia
-	| sentenciaSiLuego 
-	| sentenciaSiLuegoSino 
-	| sentenciaMientras 
-      	| sentenciaPara 
+	| sentenciaSiLuego {printf("la sentencia si luego es valida\n");}
+	| sentenciaSiLuegoSino {printf("la sentencia si luego sino es valida\n");}
+	| sentenciaMientras {printf("la sentencia mientras es valida\n");}
+      	| sentenciaPara  {printf("la sentencia para es valida\n");}
 
 	| sentenciaSiLuegoSinoIncorrecto {printf("error: la sentencia si luego sino es incorrecta\n");}
 	| sentenciaSiLuegoIncorrecto {printf("error: la sentencia si luego es incorrecta\n");}
@@ -73,15 +73,15 @@ sentencia:
 	
 sentenciaNoCorto:
 	sentenciaSinSeguimientoSubsentencia 
-	| sentenciaSiLuegoSinoNoCorto  
-        | sentenciaParaNoCorto;
+	| sentenciaSiLuegoSinoNoCorto {printf("la sentencia si luego sino no corto es valida\n");} 
+        | sentenciaParaNoCorto {printf("la sentencia para no corto es valida\n");};
 sentenciaSinSeguimientoSubsentencia:
       bloque 
-      | sentenciaVacia 
-      | sentenciaInterrupcion 
-      | sentenciaContinuar 
-      | sentenciaRetornar 
-      | sentenciaExpresion 
+      | sentenciaVacia {printf("la sentencia vacia es valida\n");} 
+      | sentenciaInterrupcion {printf("la sentencia interrupcion es valida\n");}
+      | sentenciaContinuar {printf("la sentencia continuar es valida\n");}
+      | sentenciaRetornar {printf("la sentencia retornar es valida\n");}
+      | sentenciaExpresion {printf("la sentencia de expresion es valida\n");}
 
       | sentenciaExpresionIncorrecto {printf("error: ';' esperado\n");}
       | sentenciaVaciaIncorrecto {printf("error: ';' esperado\n");}
@@ -104,9 +104,8 @@ declaradorVariableId:
       | declaradorVariableId CORCHETE_INI CORCHETE_FIN;
 inicializadorVariable: 
       expresion 
-      | inicializadorArreglo 
-
-      | inicializadorArregloIncorrecto;
+      | inicializadorArreglo {printf("la sentencia inicializador de arreglo es valida\n");}
+      | inicializadorArregloIncorrecto {printf("error: la sentencia inicializador de arreglo es incorrecta\n");};
 
 /*SENTENCIA SI-SINO*/
 
@@ -309,7 +308,7 @@ expresionPostDecremento:
 
 primario: 
       primarioNoNuevoArreglo 
-      | expresionCreacionArreglo 
+      | expresionCreacionArreglo {printf("la sentencia creacion de arreglo es valida\n");}
 
       | expresionCreacionArregloIncorrecto {printf("error: la sentencia creacion de arreglo es incorrecta\n");}; 
 primarioNoNuevoArreglo:
@@ -329,7 +328,7 @@ inicializadorArreglo:
 	| LLAVE_INI LLAVE_FIN;
 inicializadoresVariable:
 	inicializadoresVariable	 COMA inicializadorVariable
-      | inicializadorVariable;
+      | inicializadorVariable {printf("la sentencia inicializadoresVariable es valida\n");};
 
 
 /*EXPRESIONES CREACION ARREGLO*/
