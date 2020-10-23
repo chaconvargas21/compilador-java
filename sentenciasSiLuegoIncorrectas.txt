@@ -1,0 +1,51 @@
+clase Compilador{
+	publico estatico vacio principal(cadena []args){
+		
+		si (verdadero
+		    ;
+		si (verdadero
+		    ;
+		si verdadero)
+		    ;
+		si verdadero
+		    ;
+		si ()
+		    ;
+		si 
+		    ;
+		
+		si (verdadero)
+		
+		si (verdadero
+		
+		si verdadero)
+		
+		si verdadero
+		
+		si ()
+		
+		si 
+		
+		(verdadero)
+		    ;
+		(verdadero
+		    ;
+		verdadero)
+		    ;
+		verdadero
+		    ;
+		()
+		    ;
+		    
+		(verdadero)
+		
+		(verdadero
+		
+		verdadero)
+		
+		verdadero
+		
+		()
+		
+	     }
+}
