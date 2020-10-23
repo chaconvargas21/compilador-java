@@ -1,0 +1,10 @@
+clase ClaseTraducida {
+     publico estatico vacio principal(Cadena[] args) {
+        doble b,h;
+        b  =8;
+        h =5;
+        doble area;
+        area=b*h/2;
+       Sistema.salida.imprimirlinea(area);
+     }
+}
