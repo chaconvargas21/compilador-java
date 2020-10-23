@@ -36,6 +36,12 @@ tipo_dato "doble"|"flotante"|"entero"|"booleano"|"Cadena"|"corto"|"largo"|"byte"
 variable_valida [a-zA-Z\_][a-zA-Z0-9]*
 
 %%
+{error_declaracion} {printf("Error, declaracion variable incorrecta\n"); }
+{enteroEmpiezaCero}	 {printf("Error, entero comienza en 0 y no es 0 \n");}
+{flotanteEmpiezaCero}	 {printf("Error, flotante comienza en 0\n");}
+{dobleEmpiezaCero}	 {printf("Error, doble empieza en 0\n");}
+{errorIdentificador}	 {printf("Error, identificador no valido\n");}
+
 {entero}	     {estado = ENTERO_LITERAL;	    agregar_palabra(estado, yytext);    return ENTERO_LITERAL;}
 {numeroFlotante} {estado = FLOTANTE_LITERAL;	agregar_palabra(estado, yytext);    return FLOTANTE_LITERAL;}
 {numeroDoble}    {estado = DOBLE_LITERAL;	    agregar_palabra(estado, yytext);    return DOBLE_LITERAL;}
@@ -157,15 +163,6 @@ variable_valida [a-zA-Z\_][a-zA-Z0-9]*
 "]" {estado = CORCHETE_FIN;	    agregar_palabra(estado, yytext);    return CORCHETE_FIN;}
 
 {funcion_primitiva}	 {estado = FUNC_PRIMITIVA;	agregar_palabra(estado, yytext);    return FUNC_PRIMITIVA;}
-
-{error_declaracion}         { printf("Error en la linea %i, declaracion de varible incorrecta: %s\n", numLineas, yytext); }
-{enteroEmpiezaCero}	        { printf("Error en la linea %i,  numero  entero empieza con 0 y no es 0: %s\n", numLineas, yytext); }
-{errorNumeroFlotanteConComa}	 { printf("Error en la linea %i,  flotante con coma : %s\n", numLineas, yytext); }
-{errorNumeroDobleConComa}   { printf("Error en la linea %i,  doble con coma : %s\n", numLineas, yytext); }
-{errorMasDeUnPuntoOComa}    { printf("Error en la linea %i,  numero com mas de una coma o punto : %s\n", numLineas,  yytext); }
-{flotanteEmpiezaCero}	    { printf("Error en la linea %i,  numero flotante empieza con 0 y no es 0. : %s\n", numLineas, yytext); }
-{dobleEmpiezaCero}	        { printf("Error en la linea %i,  numero doble empieza con 0 y no es 0. : %s\n", numLineas, yytext); }
-{errorIdentificador}	    { printf("Error en la linea %i,  la escritura numero o variable no es valido : %s\n", numLineas, yytext); }
 
 {identificador}	     {estado = IDENTIFICADOR;	agregar_palabra(estado, yytext);    return IDENTIFICADOR;}
 
