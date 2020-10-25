@@ -1,0 +1,9 @@
+clase ClaseTraducida{
+	publico estatico vacio principal(Cadena []args){
+	    entero a = 0;
+
+	    para (a = 1; a < 5; a++)
+		System.out.println(a);
+
+	}
+}

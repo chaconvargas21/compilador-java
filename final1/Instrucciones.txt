@@ -1,0 +1,6 @@
+//copiar los archivos a escritorio (escencial xD)
+//aun falta arreglar el exe, te pide 2 veces el nombre del archivo
+	//la primera vez que te pide, solo poner el nombre de archivo sin extension
+	//la segunda vez nombre y extension (txt)
+cd Escritorio
+bash pru1.sh
