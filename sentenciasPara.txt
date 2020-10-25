@@ -3,18 +3,18 @@ clase Compilador{
 	    entero a = 0;
 
 	    para (a = 1; a < 5; a++)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (a = 2; a < 5;)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (a = 3;;)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (; b < 5; b++)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (; b < 5;)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (; b < 5;)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	    para (;;)
-		System.out.println(a);
+		sistema.salida.imprimirlinea(a);
 	}
 }
