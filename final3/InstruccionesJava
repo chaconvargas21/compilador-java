@@ -1,0 +1,11 @@
+sudo apt install mono-complete
+//sudo apt-get update
+sudo apt-get install default-jre
+sudo apt install default-jdk
+make -f makefile
+
+cd Escritorio
+mono traductor.exe
+Area.txt
+javac Area.java
+java Area

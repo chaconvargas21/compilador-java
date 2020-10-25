@@ -1,0 +1,51 @@
+clase ClaseTraducida{
+	publico estatico vacio principal(Cadena []args){
+		
+		si (verdadero
+		    ;
+		si (verdadero
+		    ;
+		si verdadero)
+		    ;
+		si verdadero
+		    ;
+		si ()
+		    ;
+		si 
+		    ;
+		
+		si (verdadero)
+		
+		si (verdadero
+		
+		si verdadero)
+		
+		si verdadero
+		
+		si ()
+		
+		si 
+		
+		(verdadero)
+		    ;
+		(verdadero
+		    ;
+		verdadero)
+		    ;
+		verdadero
+		    ;
+		()
+		    ;
+		    
+		(verdadero)
+		
+		(verdadero
+		
+		verdadero)
+		
+		verdadero
+		
+		()
+		
+	     }
+}
