@@ -1,0 +1,22 @@
+clase ClaseTraducida{
+	publico estatico vacio principal(Cadena []args){
+		 
+		entero a[] = {1,2,3,4,5};
+		
+		entero b[] = {1,2,3,4};
+		
+		entero c[] = {,};
+		
+		entero d[] = {};
+		
+
+		para(entero i=0; i<5; i++){
+			a[i] = a[i] +1;
+			Sistema.salida.imprimirlinea(a[i]);
+		} 
+
+		si(3 == 3)
+    			Sistema.salida.imprimirlinea("Es primo: 9");
+		
+     }
+}

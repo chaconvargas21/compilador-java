@@ -1,0 +1,155 @@
+clase ClaseTraducida{
+
+publico estatico vacio principal ( Cadena [ ]  args )  { 
+
+	entero numero1 = 4;
+	entero numero2 = 4, numero3 = 5;
+
+	entero ent1 = 4;
+	ent1++;
+	++ent1;
+	--ent1;
+	ent1--;
+
+	entero numEnte12 = (entero) numero1;
+
+	flotante numero12 = numero1 + numero2 -3;
+	flotante numero12mult = numero1 * numero2;
+
+	entero l[] = nuevo entero[3] ; 
+	l[0] = 9;
+	l[1] = 4;
+	l[2] = 1;
+    
+    	entero mayor = l[0] ;
+	entero contador = 1;
+
+	mientras (contador < 3){
+		si(l[contador] > mayor){
+			mayor = l[contador];
+		}
+		contador++;
+    	}
+
+	Sistema.salida.imprimirlinea(mayor);
+
+	contador = (contador == 2) ? 1 : 0;
+
+	entero prueba = 2;
+	
+	si(prueba == 2){
+		entero contsinomientras = 3;
+		mientras (contador < 3)
+		{
+			
+			si(l[1] > mayor || contsinomientras == contador)
+			{
+				mayor = l[1];
+				mientras (contador < 3)
+				{
+					
+					si(l[contador] > mayor || contsinomientras == contador)
+					{
+						mayor = l[1];
+						
+					}
+					contador++;
+		    		}
+			}
+			contador++;
+    		}
+
+		si(l[1] > mayor && contsinomientras == contador)
+		{
+			mayor = l[1];
+			contador = (contador == 2) ? 5 : 3;
+			
+		}
+		contador++;
+	}
+	sino{
+		entero contsinomientras = 3;
+		mientras (contador < 3)
+		{
+			
+			si(l[1] > mayor || contsinomientras == contador)
+			{
+				mayor = l[1];
+				
+			}
+			contador++;
+    		}
+
+		si(l[1] > mayor && contsinomientras == contador)
+		{
+			mayor = l[1];
+		}
+		contador++;
+	}
+	
+
+	prueba = 0;
+	si(prueba == 1)
+	{
+		mientras (contador < 3)
+		{
+			si(l[1] > mayor)
+			{
+				mayor = l[1];
+				interrupcion;
+			}
+			contador++;
+    		}
+	}
+	sino si(prueba == 2){
+		entero contsinomientras = 3;
+		mientras (contador < 3)
+		{
+			
+			si(l[1] > mayor || contsinomientras == contador)
+			{
+				mayor = l[1];
+			}
+			contador++;
+    		}
+
+		si(l[1] > mayor && contsinomientras == contador)
+		{
+			mayor = l[1];
+			si(l[1] > mayor && contsinomientras == contador)
+			{
+				mayor = l[1];
+				contador = (contador == 2) ? 0 : 1;
+				
+			}
+		}
+		contador++;
+	}
+	sino{
+		entero contsinomientras = 3;
+		mientras (contador < 3)
+		{
+			
+			si(prueba == 2){
+
+				mayor = l[1];
+	
+			}
+			sino{
+				contsinomientras = 3;
+				mientras (contador < 3)
+				{
+						
+					si(l[1] > mayor || contsinomientras == contador)
+					{
+						mayor = l[1];
+							
+					}
+					contador++;
+			    	}
+			}
+    		}
+	}			
+
+	}
+} 

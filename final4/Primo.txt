@@ -1,0 +1,24 @@
+clase ClaseTraducida { 
+
+publico estatico vacio principal ( Cadena [ ]  args )  { 
+
+	entero b = -0;
+	entero a = -01;
+
+	flotante puntos = 1.2.56;
+	flotante puntos2 = 1..56;
+	entero enteromal = -05;
+	doble doble2 = 01.12356789;
+	flotante numero126 = -023.58;	
+	flotante numero128 = -1156.23.45;
+	Cadena declaracion variable = "hola";
+
+
+
+
+  si(verdadero)
+    Sistema.salida.imprimirlinea("Es primo: 9");
+
+}
+
+}
